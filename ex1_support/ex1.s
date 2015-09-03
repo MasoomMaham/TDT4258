@@ -82,29 +82,50 @@
 	      .type   _reset, %function
         .thumb_func
 _reset: 
-		CMU BASE = 0x400c8000 		// base address of CMU
-		CMU HFPERCLKEN0 = 0x044 	// offset from base
-		CMU HFPERCLKEN0 GPIO = 13 	// bit representing GPIO
 		
-		//load CMU base address
-		ldr r1, cmu_base_addr
+	//load CMU base address
+	ldr r1, =CMU_BASE	
+	//load current value of HFPERCUK ENABLE
+	ldr r2, [r1, #CMU_HFPERCLKEN0]
+
+
+	//set bit for GPIO clk
+	mov r3, #1
+	lsl r3, r3, #CMU_HFPERCLKEN0_GPIO	//Logical shift left
+	orr r2, r2, r3				 
+
+	//store new value
+	str r2, [r1, #CMU_HFPERCLKEN0]
+
+	ldr R0, =GPIO_PA_BASE
+	ldr R1, =GPIO_PC_BASE
+	port_a .req R0
+	port_c .req R1
+		
+	//setting up pins 8-15 of port A for output (LEDs)
+	//high drive strength for LED
+	ldr r3, =GPIO_PA_BASE
+	mov r2, #0x2
+	str r2, [port_a, #GPIO_CTRL]
+
+	//set pins 8-15 to output
+	mov r2, #0x55555555
+	str r2, [port_a, #GPIO_MODEH]
 	
-		//load current value of HFPERCUK ENABLE
-		ldr r2, [r1, #CMU_HFPERCLKEN0]
+	//setting up pins 0 - 7 of port C for input (buttons)
+	//set pins 0 - 7 to input
+	mov r2, #0x33333333
+	str r2, [port_c, GPIO_MODEL]
+	
+	//Enable internal pull-ups
+	mov r2, #0xff
+	str r2, [port_c, GPIO_DOUT]
 
 
-		//set bit for GPIO clk
-		mov r3, #1
-		//lsl = logical shift left
-		lsl r3, r3, #CMU_HFPERCLKEN0_GPIO
-		//orr = logical or  
-		orr r2, r2, r3
-
-		//store new value
-		str r2, [r1, #CMU_HFPERCLK0]
-
-cmu_base_addr:
-		.long CMU_BASE		
+		
+		
+		
+			
 
 	/////////////////////////////////////////////////////////////////////////////
 	//
