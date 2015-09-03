@@ -82,9 +82,9 @@
 	      .type   _reset, %function
         .thumb_func
 _reset: 
-		CMU BASE = 0 x400c8000 		// b a se a d d r e s s o f CMU
-		CMU HFPERCLKEN0 = 0 x044 	// o f f s e t from b a se
-		CMU HFPERCLKEN0 GPIO = 13 	// b i t r e p r e s e n t i n g GPIO
+		CMU BASE = 0x400c8000 		// base address of CMU
+		CMU HFPERCLKEN0 = 0x044 	// offset from base
+		CMU HFPERCLKEN0 GPIO = 13 	// bit representing GPIO
 		
 		//load CMU base address
 		ldr r1, cmu_base_addr
@@ -95,7 +95,9 @@ _reset:
 
 		//set bit for GPIO clk
 		mov r3, #1
+		//lsl = logical shift left
 		lsl r3, r3, #CMU_HFPERCLKEN0_GPIO
+		//orr = logical or  
 		orr r2, r2, r3
 
 		//store new value
