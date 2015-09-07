@@ -112,16 +112,32 @@ _reset:
 	mov r2, #0x55555555
 	str r2, [port_a, #GPIO_MODEH]
 	
+	//mov r2, #0x00
+	//str r2, [port_a, #GPIO_DOUT]
+	
 	//setting up pins 0 - 7 of port C for input (buttons)
 	//set pins 0 - 7 to input
 	mov r2, #0x33333333
-	str r2, [port_c, GPIO_MODEL]
+	str r2, [port_c, #GPIO_MODEL]
 	
 	//Enable internal pull-ups
 	mov r2, #0xff
-	str r2, [port_c, GPIO_DOUT]
+	str r2, [port_c, #GPIO_DOUT]
+        
+        //Status of pins by reading GPIO_PC_DIN
+	ldr r2, =GPIO_DIN
+        str r2, [port_c, #GPIO_DIN]
+        cbnz r2, turnOff
+	
+turnOff: 
+	mov r2, #0x00000000
+	str r2, [port_a, #GPIO_MODEH]
 
-
+	//it eq
+	//bl turnOff
+	
+        
+	
 		
 		
 		
@@ -144,4 +160,3 @@ gpio_handler:
         .thumb_func
 dummy_handler:  
         b .  // do nothing
-
