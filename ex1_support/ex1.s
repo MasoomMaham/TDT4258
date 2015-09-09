@@ -120,19 +120,19 @@ _reset:
 	//Enable internal pull-ups
 	mov r2, #0xff
 	str r2, [port_c, #GPIO_DOUT]
+	
 
 	//turn on LED
-	ldr r2, =0x00000000
+	ldr r2, =0xFFFFFFFF
 	str r2, [port_a, #GPIO_DOUT]	
         
         //Status of pins by reading GPIO_PC_DIN
-        ldr r5, [port_c, #GPIO_DIN]
-	ldr r6, =0xFFFFFFFF
-		
-		
-		
-			
-
+Status:  
+	ldr r5, [port_c, #GPIO_DIN]
+	lsl r5, r5, #8
+	str r5, [port_a, #GPIO_DOUT]	
+	b Status
+	
 	/////////////////////////////////////////////////////////////////////////////
 	//
   // GPIO handler
@@ -142,7 +142,11 @@ _reset:
 	
         .thumb_func
 gpio_handler:  
-	b . 
+	mov r2, #0x22222222
+	str r2, []	
+	
+
+
 	/////////////////////////////////////////////////////////////////////////////
 	
         .thumb_func
