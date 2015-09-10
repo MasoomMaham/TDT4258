@@ -90,7 +90,7 @@ _reset:
 
 
 	//set bit for GPIO clk
-	mov r3, #1
+	ldr r3, =1
 	lsl r3, r3, #CMU_HFPERCLKEN0_GPIO	//Logical shift left
 	orr r2, r2, r3				 
 
@@ -101,37 +101,51 @@ _reset:
 	ldr R1, =GPIO_PC_BASE
 	port_a .req R0
 	port_c .req R1
-		
+
 	//setting up pins 8-15 of port A for output (LEDs)
 	//high drive strength for LED
 	ldr r3, =GPIO_PA_BASE
-	mov r2, #0x2
+	ldr r2, =0x2
 	str r2, [port_a, #GPIO_CTRL]
 
 	//set pins 8-15 to output
-	mov r2, #0x55555555
+	ldr r2, =0x55555555
 	str r2, [port_a, #GPIO_MODEH]
 	
 	//setting up pins 0 - 7 of port C for input (buttons)
 	//set pins 0 - 7 to input
-	mov r2, #0x33333333
+	ldr r2, =0x33333333
 	str r2, [port_c, #GPIO_MODEL]
 	
 	//Enable internal pull-ups
-	mov r2, #0xff
+	ldr r2, =0xff
 	str r2, [port_c, #GPIO_DOUT]
 	
 
 	//turn on LED
-	ldr r2, =0xFFFFFFFF
+	ldr r2, =0xffffffff
 	str r2, [port_a, #GPIO_DOUT]	
+
+	//Setup interupts
+	ldr r3, =0x22222222
+	str r3, [r4, #GPIO_EXTIPSELL]
+
+	ldr r3, =0xff
+	str r3, [r4, #GPIO_EXTIFALL]
+	
+	ldr r3, =0xff
+	str r3, [r4, #GPIO_EXTIRISE]
+
+	//Enable interupt generation
+	ldr r3, =0xff
+	str r3, [r4, #GPIO_IEN]
+
         
-        //Status of pins by reading GPIO_PC_DIN
-Status:  
-	ldr r5, [port_c, #GPIO_DIN]
-	lsl r5, r5, #8
-	str r5, [port_a, #GPIO_DOUT]	
-	b Status
+	//CPU enters sleep mode here and waits for an inertupt
+	ldr r4, =SCR
+	mov r3, #6
+	str r3, [r4]
+	wfi	
 	
 	/////////////////////////////////////////////////////////////////////////////
 	//
@@ -142,9 +156,20 @@ Status:
 	
         .thumb_func
 gpio_handler:  
-	mov r2, #0x22222222
-	str r2, []	
 	
+	//Clear interupt flags
+	ldr R3, =GPIO_BASE
+	mov R4, 0xff
+	str R4, [R3, #GPIO_IFC]
+	
+	//Status of pins by reading GPIO_DIN, then using that to turn on the LEDs
+status:  
+	ldr r5, [port_c, #GPIO_DIN]
+	lsl r5, r5, #8
+	str r5, [port_a, #GPIO_DOUT]
+
+	
+		
 
 
 	/////////////////////////////////////////////////////////////////////////////
