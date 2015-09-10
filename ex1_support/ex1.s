@@ -140,12 +140,16 @@ _reset:
 	ldr r3, =0xff
 	str r3, [r4, #GPIO_IEN]
 
+	ldr r3, =0x802
+	ldr r4, =ISER0
+	str r3, [r4]
+	
         
 	//CPU enters sleep mode here and waits for an inertupt
 	ldr r4, =SCR
 	mov r3, #6
 	str r3, [r4]
-	wfi	
+	wfi
 	
 	/////////////////////////////////////////////////////////////////////////////
 	//
@@ -158,18 +162,18 @@ _reset:
 gpio_handler:  
 	
 	//Clear interupt flags
-	ldr R3, =GPIO_BASE
-	mov R4, 0xff
-	str R4, [R3, #GPIO_IFC]
+	ldr r3, =GPIO_BASE
+	ldr r4, [r3, #GPIO_IF]
+	str r4, [r3, #GPIO_IFC]
+
+
+	ldr r2, =0x00000000
+	str r2, [port_a, #GPIO_DOUT]	
 	
-	//Status of pins by reading GPIO_DIN, then using that to turn on the LEDs
-status:  
+	//Status of pins by reading GPIO_DIN, then using that to turn on the LEDs 
 	ldr r5, [port_c, #GPIO_DIN]
 	lsl r5, r5, #8
-	str r5, [port_a, #GPIO_DOUT]
-
-	
-		
+	str r5, [port_a, #GPIO_DOUT]	
 
 
 	/////////////////////////////////////////////////////////////////////////////
