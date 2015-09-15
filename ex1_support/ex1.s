@@ -111,7 +111,7 @@ _reset:
 	//set pins 8-15 to output
 	ldr r2, =0x55555555
 	str r2, [port_a, #GPIO_MODEH]
-	
+
 	//setting up pins 0 - 7 of port C for input (buttons)
 	//set pins 0 - 7 to input
 	ldr r2, =0x33333333
@@ -122,11 +122,12 @@ _reset:
 	str r2, [port_c, #GPIO_DOUT]
 	
 
-	//turn on LED
+	//turn off LED
 	ldr r2, =0xffffffff
 	str r2, [port_a, #GPIO_DOUT]	
 
 	//Setup interupts
+	ldr r4, =GPIO_BASE
 	ldr r3, =0x22222222
 	str r3, [r4, #GPIO_EXTIPSELL]
 
@@ -140,9 +141,9 @@ _reset:
 	ldr r3, =0xff
 	str r3, [r4, #GPIO_IEN]
 
-	ldr r3, =0x802
-	ldr r4, =ISER0
-	str r3, [r4]
+	//ldr r3, =0x802
+	//ldr r4, =ISER0
+	//str r3, [r4]
 	
         
 	//CPU enters sleep mode here and waits for an inertupt
@@ -150,6 +151,7 @@ _reset:
 	mov r3, #6
 	str r3, [r4]
 	wfi
+
 	
 	/////////////////////////////////////////////////////////////////////////////
 	//
@@ -167,53 +169,45 @@ gpio_handler:
 	str r4, [r3, #GPIO_IFC]
 
 
-	ldr r2, =0x00000000
-	str r2, [port_a, #GPIO_DOUT]	
 	
 	//Status of pins by reading GPIO_DIN, then using that to turn on the LEDs 
-//	ldr r5, [port_c, #GPIO_DIN]
-//	lsl r5, r5, #8fl
-//	str r5, [port_a, #GPIO_DOUT]	
-
+	ldr r5, [port_c, #GPIO_DIN]
+	lsl r5, r5, #8
+	str r5, [port_a, #GPIO_DOUT]	
 
 	//Trying to make the lights flash when the first button is pressed down
 
 	//load the button input into r5, then compare that to the right bits, if they are equal jump to the function flashing
-	ldr r5, [port_c, #GPIO_DIN]
-	cmp r5, #fffffffe
-	it eq 
-	b flashing
-	b someWhereElse
+	//ldr r5, [port_c, #GPIO_DIN]
+	//ldr r6, =0xfffffffe
+	//cmp r5, r6 
+	//beq flashing
+	//b someWhereElse
 
-
-//FLashes the light when button 1 is pressed dow, it will flash forever since it is stuck in an infinite loop
-flashing:
-	
-	ldr r5, [port_c, #GPIO_DIN]
-	ldr r6, =ffffffff
-	str r6, [port_a, #GPIO_DOUT]
-	ldr r6, =00000000
-	str r6, [port_a, #GPIO_DOUT]
-
-
-	//Call the stopFlashing function to stop the lights from flashing if button 2 is hit else keep flashing
-	ldr r5, [port_c, #GPIO_DIN]
-	cmp r5, =fffffffd
-	itt eq
-	b stopFlashing
-	b flashing
-
+//////////////////////////////////////////////////////////////////////
+///
+/// 	Ignore the code in here for now
+///
+///
+//FLashes the light when button 1 is pressed down, it will flash forever since it is stuck in an infinite loop
+//flashing:
+//	ldr r5, [port_c, #GPIO_DIN]
+//	ldr r6, =0xffffffff
+//	str r6, [port_a, #GPIO_DOUT]
+//	ldr r6, =0x00000000
+//	str r6, [port_a, #GPIO_DOUT]
+//	Call the stopFlashing function to stop the lights from flashing if button 2 is hit else keep flashing
+//	ldr r6, =0xfffffffd
+//	cmp r5, r6
+//	beq stopFlashing
 //if button 2 is pressed stop the flashing lights
-stopFlashing:
-	ldr r5, =ffffffff
-	str r5, [posrt_c, #GPIO_DOUT]
+//stopFlashing:
+//	ldr r5, =0xffffffff
+//	str r5, [port_c, #GPIO_DOUT]
+//	b flashing
+//////////////////////////////////////////////////////////////////////
 
-
-someWhereElse:
-
-
-
-
+//someWhereElse:
 
 
 	/////////////////////////////////////////////////////////////////////////////
