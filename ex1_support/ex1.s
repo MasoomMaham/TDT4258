@@ -140,8 +140,8 @@ _reset:
 	str r3, [r4, #GPIO_IEN]
 
 
-	//Turn off LEDs
-	ldr r2, =0xffffffff
+	//Turn on LEDs
+	ldr r2, =0xfefefefe
 	str r2, [port_a, #GPIO_DOUT]	
         
 	//CPU enters sleep mode here and waits for an inertupt
@@ -167,37 +167,30 @@ gpio_handler:
 	str r4, [r3, #GPIO_IFC]
 	
 	//Status of pins by reading GPIO_DIN, then using that to turn on the LEDs 
-	//ldr r5, [port_c, #GPIO_DIN]
-	//lsl r5, r5, #8
-	//str r5, [port_a, #GPIO_DOUT]	
-
-	//Turn on all LEDs when button 1 is pressed
 	ldr r5, [port_c, #GPIO_DIN]
-	ldr r6, =0b11111110
-	cmp r5, r6 
-	beq turnAllOn
-	
-
-	//Jump to turnAllOff if button 3 is pressed
-	ldr r6, =0b01111111
+	//lsl r5, r5, #8 
+	//str r5, [port_a, #GPIO_DOUT]
+	ldr r6, =0xfb
 	cmp r5, r6
-	beq turnAllOff
-	//b someWhereElse
-
-
-//Turn on LEDs
-turnAllOn:
-	ldr r5, [port_c, #GPIO_DIN]
-	ldr r6, =0x00000000
-	str r6, [port_a, #GPIO_DOUT]
+	beq addLight
+	ldr r7, =0xfe
+	cmp r5, r7
+	beq removeLight
 	b end
 
 
-//Turn off LEDs
-turnAllOff:
-	ldr r6, =0xffffffff
-	str r6, [port_a, #GPIO_DOUT]
+
+
+addLight:
+	lsl r2, r2, #1
+	str r2, [port_a, #GPIO_DOUT]
 	b end
+
+removeLight:
+	lsr r2, r2, #1
+	str r2, [port_a, #GPIO_DOUT]
+	b end
+
 
 end:
 	bx lr
