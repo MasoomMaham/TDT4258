@@ -176,15 +176,7 @@ gpio_handler:
 	ldr r7, =0xfe
 	cmp r5, r7
 	beq removeLight
-	ldr r8, =0x0000
-	cmp r5, r8
-	beq restart
 	b end
-
-restart:
-	ldr r2, =0xfe
-	str r2, [port_a, #GPIO_DOUT]
-
 
 addLight:	
 	lsl r2, r2, #1
