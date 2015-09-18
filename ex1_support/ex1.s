@@ -98,16 +98,16 @@ _reset:
 	str r2, [r1, #CMU_HFPERCLKEN0]
 
 	//setup NVIC for GPIO odd & even
-	ldr R0, =ISER0
-	ldr R1, [R0] // load any existing enabled interrupts
-	movw R2, #0x802 // Pin 1 and 11 for even and odd
-	orr R2, R2, R1 // or with existing value
-	str R2, [R0]
+	ldr r0, =ISER0
+	ldr r1, [R0]
+	movw r2, #0x802 
+	orr r2, r2, r1
+	str r2, [r0]
 
-	ldr R0, =GPIO_PA_BASE
-	ldr R1, =GPIO_PC_BASE
-	port_a .req R0
-	port_c .req R1
+	ldr r0, =GPIO_PA_BASE
+	ldr r1, =GPIO_PC_BASE
+	port_a .req r0
+	port_c .req r1
 
 	//setting up pins 8-15 of port A for output (LEDs)
 	//high drive strength for LED
@@ -141,7 +141,7 @@ _reset:
 
 
 	//Turn on LEDs
-	ldr r2, =0xfefefefe
+	ldr r2, =0xfe00
 	str r2, [port_a, #GPIO_DOUT]	
         
 	//CPU enters sleep mode here and waits for an inertupt
@@ -176,12 +176,17 @@ gpio_handler:
 	ldr r7, =0xfe
 	cmp r5, r7
 	beq removeLight
+	ldr r8, =0x0000
+	cmp r5, r8
+	beq restart
 	b end
 
+restart:
+	ldr r2, =0xfe
+	str r2, [port_a, #GPIO_DOUT]
 
 
-
-addLight:
+addLight:	
 	lsl r2, r2, #1
 	str r2, [port_a, #GPIO_DOUT]
 	b end
@@ -191,10 +196,14 @@ removeLight:
 	str r2, [port_a, #GPIO_DOUT]
 	b end
 
+turnOnEvery2ndLight:
+	ldr r2, =0x5500
+	str r2, [port_a, #GPIO_DOUT]
+	b end
 
 end:
 	bx lr
-
+	b end
 
 	/////////////////////////////////////////////////////////////////////////////
 	
