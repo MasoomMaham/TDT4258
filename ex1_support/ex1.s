@@ -104,6 +104,8 @@ _reset:
 	orr r2, r2, r1
 	str r2, [r0]
 
+
+	//Make a variable for GPIO_PA_BASE abd GPIO_PC_BASE so we can just use the same registers each time
 	ldr r0, =GPIO_PA_BASE
 	ldr r1, =GPIO_PC_BASE
 	port_a .req r0
@@ -134,14 +136,14 @@ _reset:
 	str r3, [r4, #GPIO_EXTIPSELL]
 	ldr r3, =0xff
 	str r3, [r4, #GPIO_EXTIFALL]
-//	ldr r3, =0xff
-//	str r3, [r4, #GPIO_EXTIRISE]
+	ldr r3, =0xff
+	str r3, [r4, #GPIO_EXTIRISE]
 	//Enable interupt generation
 	str r3, [r4, #GPIO_IEN]
 
 
-	//Turn on LEDs
-	ldr r2, =0xfe00
+	//Turn off LEDs
+	ldr r2, =0xff00
 	str r2, [port_a, #GPIO_DOUT]	
         
 	//CPU enters sleep mode here and waits for an inertupt
@@ -166,36 +168,32 @@ gpio_handler:
 	ldr r4, [r3, #GPIO_IF]
 	str r4, [r3, #GPIO_IFC]
 	
-	//Status of pins by reading GPIO_DIN, then using that to turn on the LEDs 
+	//Status of pins by reading GPIO_DIN, then using that see what buttons are pressed
 	ldr r5, [port_c, #GPIO_DIN]
 	//lsl r5, r5, #8 
-	//str r5, [port_a, #GPIO_DOUT]
 	ldr r6, =0xfb
 	cmp r5, r6
-	beq addLight
+	beq button3
 	ldr r7, =0xfe
 	cmp r5, r7
-	beq removeLight
+	beq button1
 	b end
 
-addLight:	
+//Function that adds a light on the right side or removes light on the left side
+button3:	
 	lsl r2, r2, #1
 	str r2, [port_a, #GPIO_DOUT]
 	b end
 
-removeLight:
+//Funtion that adds a lighton the left side or removes light on the right side
+button1:
 	lsr r2, r2, #1
 	str r2, [port_a, #GPIO_DOUT]
 	b end
 
-turnOnEvery2ndLight:
-	ldr r2, =0x5500
-	str r2, [port_a, #GPIO_DOUT]
-	b end
-
+//Funtion that branches back to the last instruction
 end:
 	bx lr
-	b end
 
 	/////////////////////////////////////////////////////////////////////////////
 	
