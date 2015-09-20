@@ -146,7 +146,7 @@ _reset:
 	ldr r2, =0xff00
 	str r2, [port_a, #GPIO_DOUT]	
         
-	//CPU enters sleep mode here and waits for an inertupt
+	//CPU enters sleep mode here and waits for an inertupt (Button to be pressed)
 	ldr r4, =SCR
 	mov r3, #6
 	str r3, [r4]
@@ -185,7 +185,7 @@ button3:
 	str r2, [port_a, #GPIO_DOUT]
 	b end
 
-//Funtion that adds a lighton the left side or removes light on the right side
+//Funtion that adds a light on the left side or removes light on the right side
 button1:
 	lsr r2, r2, #1
 	str r2, [port_a, #GPIO_DOUT]
