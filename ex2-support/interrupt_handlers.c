@@ -6,10 +6,14 @@
 /* TIMER1 interrupt handler */
 void __attribute__ ((interrupt)) TIMER1_IRQHandler() 
 {  
+
+	*TIMER1_IFC = 1;
   /*
     TODO feed new samples to the DAC
     remember to clear the pending interrupt by writing 1 to TIMER1_IFC
   */  
+	
+	
 }
 
 /* GPIO even pin interrupt handler */
