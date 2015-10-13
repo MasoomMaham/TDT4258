@@ -17,7 +17,7 @@ void setupTimer(uint32_t period);
 void setupDAC();
 void setupNVIC();
 void setupGPIO();
-void playMusic();
+//void playMusic();
 
 /* Your code will start executing here */
 int main(void) 
@@ -31,7 +31,7 @@ int main(void)
   setupNVIC();
 
   /* Play music using synthesizer */
-  playMusic();
+  //playMusic();
   
   /* TODO for higher energy efficiency, sleep while waiting for interrupts
      instead of infinite loop for busy-waiting
