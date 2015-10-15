@@ -13,32 +13,28 @@
 #define   SAMPLE_PERIOD   32768
 
 /* Declaration of peripheral setup functions */
-void setupTimer(uint32_t period);
-void setupDAC();
-void setupNVIC();
-void setupGPIO();
-//void playMusic();
+void setupTimer(uint32_t period);  //Declaration of function setupTimer because C needs to know the function before it's called
+void setupDAC();		   //Declaration of function setupDAC() with same argument as above.
+void setupNVIC();		   //Declaration of function setupNVIC() with same argument as above.
+void setupGPIO();		   //Declaration of function setupGPIO() with same argument as above.
 
 /* Your code will start executing here */
 int main(void) 
 {  
   /* Call the peripheral setup functions */
-  setupGPIO();
-  setupDAC();
-  setupTimer(SAMPLE_PERIOD);
+  setupGPIO();		     //Calling function setupGPIO() to make the microcontroller handle I/O requests from button and LED's
+  setupDAC();		     //Calling function setupDAC() to turn on the audio channels so it can play in stereo or mono.
+  setupTimer(SAMPLE_PERIOD); //Calling function setupTimer() to activate a timer for use with interrupts. 
   
   /* Enable interrupt handling */
-  setupNVIC();
-
-  /* Play music using synthesizer */
-  //playMusic();
+  setupNVIC();		     //Calling function setupNVIC() to activate the CPU's interrupt handling.
   
   /* TODO for higher energy efficiency, sleep while waiting for interrupts
      instead of infinite loop for busy-waiting
   */
   while(1)
   {
-  	
+
   }
 	
   return 0;
