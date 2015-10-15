@@ -3,49 +3,48 @@
 
 #include "efm32gg.h"
 
-double _radPerCircle = 3.14159265359*2;
-int _frequency = 2000;
-int _sampleRate = 44100;
+double _radPerCircle = 3.14159265359*2;		//Declaration of a global variabel which is used to create a full sine wave by 							  letting the wave go a full round in the "unit circle"(2pi). 
+int _frequency = 2000;				//Declaration of the frequency the sound wave should use. 
+int _sampleRate = 44100;			//Declaration of the samplingrate. How many times should the sound wave be 							  sampled, higher samplingrate the better the sound becomes. 
+int calculateSine(double radian);		//Declaration of function calculateSine(), which calculate a sine value in a point.
 
-int calculateSine(double radian);
-
-void setSineOscillator(int sampleRate)
+void setSineOscillator(int sampleRate)		//Function used to set the samplingrate.
 {
-	_sampleRate = sampleRate;
+	_sampleRate = sampleRate;		//Set the value of _sampleRate to the one passed to the parameter of the function.
 }
 
-void setFrequency(int _valueFrequency)
+void setFrequency(int _valueFrequency)		//Function used to set the frequency.
 {
-	_frequency = _valueFrequency;
+	_frequency = _valueFrequency;		//Set the value of _valueFrequency to the one passed to the parameter of the 							  function.
 }
 
-double powerOfInt(double base, int degree)
+double powerOfInt(double base, int degree) 	//Function used to calculate the power of a number.
 {
-	double powerOfBase = base;
-	for(int powerTimes = 0; powerTimes < degree; powerTimes++)
+	double powerOfBase = base;		//Creating a variable which contains the number to calculate the power for. 
+	for(int powerTimes = 0; powerTimes < degree; powerTimes++)//Loop calculating the power of a number by looping degree times.
 	{
-		powerOfBase *= base;
+		powerOfBase *= base;		//Calculating the power by multiplying base degree times and storing it in 							  powerOfBase
 	}
 	
-	return powerOfBase;
+	return powerOfBase;			//Returning the power of the number we wanted to calculate.
 }
 
-int getNext(int sampleNumberInSeconds)
+int getNext(int sampleNumberInSeconds)//Function used to generate an angle to create the next sound wave in a point at the x-axis. 
 {
-	*GPIO_PA_DOUT = 0x0000000;
-	int samplePerOccilation = (_sampleRate/_frequency);
+	*GPIO_PA_DOUT = 0xF0F0F0F0;
+	int samplePerOccilation = (_sampleRate/_frequency);	
 	double depthIntoOccilations = (samplePerOccilation % sampleNumberInSeconds) / samplePerOccilation;
-	return (int)calculateSine(depthIntoOccilations * _radPerCircle);
+	return calculateSine(depthIntoOccilations * _radPerCircle);   //Call function to calculate a sine value for the angle.
 }
 
-int calculateSine(double radian)
+int calculateSine(double radian)		 //Function to calculate the sine value of an angle by use of taylor approximation.
 {
-	double sineApprox = radian - (powerOfInt(radian,3)/(3*2*1)) + (powerOfInt(radian,5)/(5*4*3*2*1)) - (powerOfInt(radian,7)/(7*6*5*4*3*2*1));
-	return (int)sineApprox;
+	double sineApprox = radian - (powerOfInt(radian,3)/(3*2*1)) + (powerOfInt(radian,5)/(5*4*3*2*1)) - (powerOfInt(radian,7)/(7*6*5*4*3*2*1));				 //Calculating and storing the sine value in a variable. 
+	return (int)sineApprox;			 //Returning the sine value as an int because the DAC only operates on that type.
 }
 
-int playMusic()
+
+int playMusic(int wavePoint)			//Function used to play the music to the DAC, and call the calculating functions.
 {	
-	*GPIO_PA_DOUT = 0x0000000;
-	return getNext(3) * 30000;
+	return getNext(wavePoint)*5000;		//Calls the function getNext with an int as argument. The int is here thought of 							  as a value of time on the x-axis. Returning the point on the sound wave to be 						  played
 }
