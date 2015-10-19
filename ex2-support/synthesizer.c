@@ -31,7 +31,6 @@ double powerOfInt(double base, int degree) 	//Function used to calculate the pow
 
 int getNext(int sampleNumberInSeconds)//Function used to generate an angle to create the next sound wave in a point at the x-axis. 
 {
-	*GPIO_PA_DOUT = 0xF0F0F0F0;
 	int samplePerOccilation = (_sampleRate/_frequency);	
 	double depthIntoOccilations = (samplePerOccilation % sampleNumberInSeconds) / samplePerOccilation;
 	return calculateSine(depthIntoOccilations * _radPerCircle);   //Call function to calculate a sine value for the angle.
@@ -44,7 +43,7 @@ int calculateSine(double radian)		 //Function to calculate the sine value of an 
 }
 
 
-int playMusic(int wavePoint)			//Function used to play the music to the DAC, and call the calculating functions.
+int playMusic(int wavePoint, int volume)	//Function used to play the music to the DAC, and call the calculating functions.
 {	
-	return getNext(wavePoint)*5000;		//Calls the function getNext with an int as argument. The int is here thought of 							  as a value of time on the x-axis. Returning the point on the sound wave to be 						  played
+	return getNext(wavePoint)*volume;	//Calls the function getNext with an int as argument. The int is here thought of 							  as a value of time on the x-axis. Returning the point on the sound wave to be 						  played
 }
