@@ -3,23 +3,28 @@
 
 #include "efm32gg.h"
 
-int playMusic(int i);	  //Defines the function playMusic() because C needs to know it exists before it is called.
+int playMusic(int i, int volume);	//Defines the function playMusic() because C needs to know it exists before it is called.
 void interrupthandler();  //Defines the function interruptHandler() with the same argument as above.
 int i = 0;		  //Defines an Integer i to hold track on where in the sine wave we are and make the DAC play continouosly
+int sound = 0;
+int increment = 0;
+int volume = 5000;
 
 /* TIMER1 interrupt handler */
 void __attribute__ ((interrupt)) TIMER1_IRQHandler() 
 {  	
-	if(i == 7) 	  		//The if-statement allows the Handler to increment before reset. Change this and you get 
+	if(i == sound)	 	  	//The if-statement allows the Handler to increment before reset. Change this and you get 
 	{				//different sounds.
 		i = 0;			//Set i to zero to reset the sound.
 	}	
 
-	*DAC0_CH0DATA = playMusic(i);	//*Some_Register means write to it. The code let our synthesizer write a continous stream 
-  	*DAC0_CH1DATA =	playMusic(i);	// to the DAC channel 0 and 1, which means we use stereo.	
-	*TIMER1_IFC = 1;		//Clearing the interrupt generated from a button pressed. 
-	i++;				//Incrementing i by 1 to let the interrupt handler be able to play a smooth sine wave. 
-  /*
+	*DAC0_CH0DATA = playMusic(i, volume); //*Some_Register means write to it. The code let our synthesizer write a continous 							stream 
+  	*DAC0_CH1DATA =	playMusic(i, volume);	// to the DAC channel 0 and 1, which means we use stereo.	
+	*TIMER1_IFC = 1;			//Clearing the interrupt generated from a button pressed. 
+	i = i + increment;		//Incrementing i by 1 to let the interrupt handler be able to play a smooth sine wave. 
+  
+
+/*
     TODO feed new samples to the DAC
     remember to clear the pending interrupt by writing 1 to TIMER1_IFC
   */  
@@ -53,38 +58,62 @@ void interrupthandler(){
 						//to a variable of the type uint8_t, which saves only 8 bits because button and 						  LED's use 8 bits.  
 	if(button_pressed == 0x10)		//if-statement checks to see if button SW5 is pressed.
 	{
-		//*GPIO_PA_DOUT = 0xFFFFFFFF;	
+		//*GPIO_PA_DOUT = 0xFFFFFFFF;
+		if(sound != 200)
+		{		
+			i = 0;
+			sound = 200;
+			increment = 1;
+		}	
 		TIMER1_IRQHandler();		//if SW5 is pressed, call the TIMER1_IRQHandler()-funksjon.
 	}
 	
 	else if(button_pressed == 0x20)		//if-statement checks to see if button SW6 is pressed.
 	{
-		*GPIO_PA_DOUT = 0x0000000;	//if SW6 is pressed, turn on all the LEDs.
-		
+		//*GPIO_PA_DOUT = 0x0000000;	//if SW6 is pressed, turn on all the LEDs.
+		if(sound != 4)
+		{		
+			i = 0;
+			sound = 4;
+			increment = 1;
+		}	
+		TIMER1_IRQHandler();
 	}
 	
 	else if(button_pressed == 0x40)		//if-statement checks to see if button SW7 is pressed.
 	{
-		*GPIO_PA_DOUT = 0xFFFFFFFF;	//if SW7 is pressed, turn off all the LEDs.
-		
+		//*GPIO_PA_DOUT = 0xFFFFFFFF;	//if SW7 is pressed, turn off all the LEDs.
+		if(sound != 26)
+		{		
+			i = 0;
+			sound = 26;
+			increment = 1;
+		}
+		TIMER1_IRQHandler();	
 	}
 	
 	else if(button_pressed == 0x80)		//if-statement checks to see if button SW8 is pressed.
 	{
-		*GPIO_PA_DOUT = 0xFFFFFFFF;	//if SW8 is pressed, turn off all the LEDs.
-		
+		//*GPIO_PA_DOUT = 0xFFFFFFFF;	//if SW8 is pressed, turn off all the LEDs.
+		if(sound != 6)
+		{		
+			i = 0;
+			sound = 6;
+			increment = 1;
+		}
+		TIMER1_IRQHandler();	
+	}
+	
+	if(button_pressed == 0x8)
+	{
+		//*GPIO_PA_DOUT = 0xFEFEFEFE;
+		volume = 5000;
 	}
 
-	/* else if(button_pressed == 0x40)
+	if(button_pressed == 0x2)
 	{
-		int timesPressed = 1;
-		for(lightNumber = 0, timesPressed < 2, lightNumber++)
-		{
-			if(lightNumber == 0)
-			{
-				*GPIO_PA_DOUT = 0x0000001;
-			}
-		}
-	}*/	
+		//*GPIO_PA_DOUT = 0xF0F0F0F0;
+		volume = 4999;
+	}		
 
 }
