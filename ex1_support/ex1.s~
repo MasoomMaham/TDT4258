@@ -74,7 +74,7 @@
 	/////////////////////////////////////////////////////////////////////////////
 	//
 	// Reset handler
-  // The CPU will start executing here after a reset
+  // The CPU will start executing here after a reset	
 	//
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -82,28 +82,76 @@
 	      .type   _reset, %function
         .thumb_func
 _reset: 
-		CMU BASE = 0 x400c8000 		// b a se a d d r e s s o f CMU
-		CMU HFPERCLKEN0 = 0 x044 	// o f f s e t from b a se
-		CMU HFPERCLKEN0 GPIO = 13 	// b i t r e p r e s e n t i n g GPIO
 		
-		//load CMU base address
-		ldr r1, cmu_base_addr
+	//load CMU base address
+	ldr r1, =CMU_BASE	
+	//load current value of HFPERCUK ENABLE
+	ldr r2, [r1, #CMU_HFPERCLKEN0]
+
+
+	//set bit for GPIO clk
+	ldr r3, =1
+	lsl r3, r3, #CMU_HFPERCLKEN0_GPIO	//Logical shift left
+	orr r2, r2, r3				 
+
+	//store new value
+	str r2, [r1, #CMU_HFPERCLKEN0]
+
+	ldr R0, =GPIO_PA_BASE
+	ldr R1, =GPIO_PC_BASE
+	port_a .req R0
+	port_c .req R1
+
+	//setting up pins 8-15 of port A for output (LEDs)
+	//high drive strength for LED
+	ldr r3, =GPIO_PA_BASE
+	ldr r2, =0x2
+	str r2, [port_a, #GPIO_CTRL]
+
+	//set pins 8-15 to output
+	ldr r2, =0x55555555
+	str r2, [port_a, #GPIO_MODEH]
 	
-		//load current value of HFPERCUK ENABLE
-		ldr r2, [r1, #CMU_HFPERCLKEN0]
-
-
-		//set bit for GPIO clk
-		mov r3, #1
-		lsl r3, r3, #CMU_HFPERCLKEN0_GPIO
-		orr r2, r2, r3
-
-		//store new value
-		str r2, [r1, #CMU_HFPERCLK0]
-
-cmu_base_addr:
-		.long CMU_BASE		
+	//setting up pins 0 - 7 of port C for input (buttons)
+	//set pins 0 - 7 to input
+	ldr r2, =0x33333333
+	str r2, [port_c, #GPIO_MODEL]
 	
+	//Enable internal pull-ups
+	ldr r2, =0xff
+	str r2, [port_c, #GPIO_DOUT]
+	
+
+	//turn off LED
+	ldr r2, =0xffffffff
+	str r2, [port_a, #GPIO_DOUT]	
+
+	//Setup interupts
+	ldr r3, =0x22222222
+	str r3, [r4, #GPIO_EXTIPSELL]
+
+	ldr r3, =0xff
+	str r3, [r4, #GPIO_EXTIFALL]
+	
+	ldr r3, =0xff
+	str r3, [r4, #GPIO_EXTIRISE]
+
+	//Enable interrupt generation
+	ldr r3, =0xff
+	str r3, [r4, #GPIO_IEN]
+
+	//Enable interrupt handling
+	ldr r3, =0x802
+	ldr r4, =ISER0
+	str r3, [r4]
+	
+        
+	//CPU enters sleep mode here and waits for an inertupt
+	ldr r4, =SCR
+	mov r3, #6
+	str r3, [r4]
+	wfi
+
 	/////////////////////////////////////////////////////////////////////////////
 	//
   // GPIO handler
@@ -112,13 +160,23 @@ cmu_base_addr:
 	/////////////////////////////////////////////////////////////////////////////
 	
         .thumb_func
-gpio_handler:  
-
-	      b .  // do nothing
+gpio_handler: 
 	
+	//Clear interupt flags
+	ldr r3, =GPIO_BASE
+	ldr r4, [r3, #GPIO_IF]
+	str r4, [r3, #GPIO_IFC]	
+	
+	ldr r2, =0x00000000
+	str r2, [port_a, #GPIO_DOUT] 
+	
+	//Status of pins by reading GPIO_DIN, then using that to turn on the LEDs 
+	//ldr r5, [port_c, #GPIO_DIN]
+	//lsl r5, r5, #8
+	//str r5, [port_a, #GPIO_DOUT]	
+
 	/////////////////////////////////////////////////////////////////////////////
 	
         .thumb_func
 dummy_handler:  
         b .  // do nothing
-
