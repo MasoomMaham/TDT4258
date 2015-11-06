@@ -45,8 +45,8 @@ static irqreturn_t gpio_interrupt_handler(int, void*, struct pt_regs*);
  * Returns 0 if successfull, otherwise -1
  */
 
-static struct file_operations fops = {
-	.owner = THIS MODULE, 
+static struct file_operations gamepad_fops = {
+	.owner = THIS_MODULE, 
 	.read = gamepad_read, 
 	.write = gamepad_write, 
 	.open = gamepad_open, 
@@ -58,7 +58,8 @@ static ssize_t gamepad_read (struct file* filp , char __user* buffer , size_t co
 {
 	printk(KERN_INFO "Reading buttons from gamepad driver.\n");
 	/*copies buttonstatus from kernelspace to userspace*/
-	uint32_t buttons = ioread32(GPIO_PC_DIN);
+	uint32_t buttons;
+	buttons = ioread32(GPIO_PC_DIN);
 	copy_to_user(buffer, &buttons, 1);
 	return 1;
 } 
@@ -93,14 +94,13 @@ irqreturn_t gpio_interrupt_handler(int irq, void* dev_id, struct pt_regs* regs)
 static int __init template_init(void)
 {
 	printk(KERN_INFO "Initializing gamepad driver\n");
-	return 0;
 	
 	/*Allocating device number*/
 	printk(KERN_INFO "Allocating device number.\n");
 	int number;
 	number = alloc_chrdev_region(&dev_num, 0, DEV_NUM_COUNT, DRIVER_NAME); 
 	if (number < 0) {
-		printk(KERN_ALERT "Failed to allocate device number\n");
+		printk(KERN_ALERT "Failed to allocate device number.\n");
 		return -1;
 	}
 	
@@ -114,8 +114,8 @@ static int __init template_init(void)
 	iowrite32(0xff, GPIO_EXTIFALL);
 	iowrite32(0xff, GPIO_EXTIRISE);
 	iowrite32(0xff, GPIO_IEN );
-	request_irq(GPIO_EVEN_NUMBER, gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
-	request_irq(GPIO_ODD_NUMBER, gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
+	request_irq(GPIO_EVEN_NUMBER, (irq_handler_t)gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
+	request_irq(GPIO_ODD_NUMBER, (irq_handler_t)gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
 
 	/* Initialize cdev */
 	printk(KERN_INFO "Initializing cdev.\n");
@@ -129,6 +129,7 @@ static int __init template_init(void)
 	device_create ( cl , NULL, dev_num , NULL, CLASS_NAME);
 	
 	printk(KERN_INFO "Gamepad driver initialized.\n");
+	return 0;
 }
 
 /*

@@ -23,7 +23,7 @@
 #define GPIO_ODD_NUMBER 18
 #define DEV_NUM_COUNT 1
 
-dev_t dev_num;
+static dev_t dev_num;
 
 struct cdev *gamepad_cdev;
 struct class *cl;
@@ -45,8 +45,8 @@ static irqreturn_t gpio_interrupt_handler(int, void*, struct pt_regs*);
  * Returns 0 if successfull, otherwise -1
  */
 
-static struct file_operations fops = {
-	.owner = THIS MODULE, 
+static struct file_operations gamepad_fops = {
+	.owner = THIS_MODULE, 
 	.read = gamepad_read, 
 	.write = gamepad_write, 
 	.open = gamepad_open, 
@@ -100,7 +100,7 @@ static int __init template_init(void)
 	int number;
 	number = alloc_chrdev_region(&dev_num, 0, DEV_NUM_COUNT, DRIVER_NAME); 
 	if (number < 0) {
-		printk(KERN_ALERT "Failed to allocate device number\n");
+		printk(KERN_ALERT "Failed to allocate device number.\n");
 		return -1;
 	}
 	
@@ -114,8 +114,8 @@ static int __init template_init(void)
 	iowrite32(0xff, GPIO_EXTIFALL);
 	iowrite32(0xff, GPIO_EXTIRISE);
 	iowrite32(0xff, GPIO_IEN );
-	request_irq(GPIO_EVEN_NUMBER, gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
-	request_irq(GPIO_ODD_NUMBER, gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
+	request_irq(GPIO_EVEN_NUMBER, (irq_handler_t)gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
+	request_irq(GPIO_ODD_NUMBER, (irq_handler_t)gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
 
 	/* Initialize cdev */
 	printk(KERN_INFO "Initializing cdev.\n");
