@@ -4,6 +4,7 @@
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+#include <linux/interrupt.h>
 #include <linux/init.h>
 #include <linux/fs.h> //?
 #include <linux/ioport.h> 
@@ -91,7 +92,7 @@ irqreturn_t gpio_interrupt_handler(int irq, void* dev_id, struct pt_regs* regs)
 	return IRQ_HANDLED;
 }
 
-static int __init template_init(void)
+static int __init gamepad_init(void)
 {
 	printk(KERN_INFO "Initializing gamepad driver\n");
 	
@@ -104,6 +105,19 @@ static int __init template_init(void)
 		return -1;
 	}
 	
+	if (request_mem_region(GPIO_PC_MODEL, 1, DRIVER_NAME) == NULL ) {
+	printk(KERN_ALERT "Error requesting GPIO_PC_MODEL memory region, already in use?\n");
+	return -1;
+	}
+	if (request_mem_region(GPIO_PC_DOUT, 1, DRIVER_NAME) == NULL ) {
+	printk(KERN_ALERT "Error requesting GPIO_PC_DOUT memory region, already in use?\n");
+	return -1;
+	}
+	if (request_mem_region(GPIO_PC_DIN, 1, DRIVER_NAME) == NULL ) {
+	printk(KERN_ALERT "Error requesting GPIO_PC_DIN memory region, already in use?\n");
+	return -1;
+	}
+
 	printk(KERN_INFO "Activating buttons.\n");
 	iowrite32(0x33333333, GPIO_PC_MODEL); //Activating pins to recognise input from buttons.
 	iowrite32(0xFF, GPIO_PC_DOUT);	//Enable internal pull up.
@@ -111,9 +125,6 @@ static int __init template_init(void)
 	/* Initializing interrups*/
 	printk(KERN_INFO "Initializing interrupts.\n");
 	iowrite32(0x22222222, GPIO_EXTIPSELL);
-	iowrite32(0xff, GPIO_EXTIFALL);
-	iowrite32(0xff, GPIO_EXTIRISE);
-	iowrite32(0xff, GPIO_IEN );
 	request_irq(GPIO_EVEN_NUMBER, (irq_handler_t)gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
 	request_irq(GPIO_ODD_NUMBER, (irq_handler_t)gpio_interrupt_handler, 0, DRIVER_NAME, &gamepad_cdev);
 
@@ -128,6 +139,11 @@ static int __init template_init(void)
 	cl = class_create (THIS_MODULE, CLASS_NAME); 
 	device_create ( cl , NULL, dev_num , NULL, CLASS_NAME);
 	
+	/* Enable interrutpts */
+	iowrite32(0xff, GPIO_EXTIFALL);
+	iowrite32(0xff, GPIO_EXTIRISE);
+	iowrite32(0xff, GPIO_IEN );
+	
 	printk(KERN_INFO "Gamepad driver initialized.\n");
 	return 0;
 }
@@ -139,7 +155,7 @@ static int __init template_init(void)
  * code from a running kernel
  */
 
-static void __exit template_cleanup(void)
+static void __exit gamepad_exit(void)
 {
 	 printk(KERN_INFO "Exiting gamepad driver\n");
 
@@ -166,8 +182,8 @@ static void __exit template_cleanup(void)
 	printk(KERN_INFO "Gamepad driver exited.\n");
 }
 
-module_init(template_init);
-module_exit(template_cleanup);
+module_init(gamepad_init);
+module_exit(gamepad_exit);
 
 MODULE_DESCRIPTION("Small module, demo only, not very useful.");
 MODULE_LICENSE("GPL");
