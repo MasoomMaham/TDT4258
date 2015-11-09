@@ -105,17 +105,18 @@ static int __init gamepad_init(void)
 		return -1;
 	}
 	
+	printk(KERN_INFO "Requesting I\O access.\n");
 	if (request_mem_region(GPIO_PC_MODEL, 1, DRIVER_NAME) == NULL ) {
-	printk(KERN_ALERT "Error requesting GPIO_PC_MODEL memory region, already in use?\n");
-	return -1;
+		printk(KERN_ALERT "Error requesting GPIO_PC_MODEL memory region, already in use?\n");
+		return -1;
 	}
 	if (request_mem_region(GPIO_PC_DOUT, 1, DRIVER_NAME) == NULL ) {
-	printk(KERN_ALERT "Error requesting GPIO_PC_DOUT memory region, already in use?\n");
-	return -1;
+		printk(KERN_ALERT "Error requesting GPIO_PC_DOUT memory region, already in use?\n");
+		return -1;
 	}
 	if (request_mem_region(GPIO_PC_DIN, 1, DRIVER_NAME) == NULL ) {
-	printk(KERN_ALERT "Error requesting GPIO_PC_DIN memory region, already in use?\n");
-	return -1;
+		printk(KERN_ALERT "Error requesting GPIO_PC_DIN memory region, already in use?\n");
+		return -1;
 	}
 
 	printk(KERN_INFO "Activating buttons.\n");
