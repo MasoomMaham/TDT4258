@@ -105,7 +105,7 @@ static int __init gamepad_init(void)
 		return -1;
 	}
 	
-	printk(KERN_INFO "Requesting I\O access.\n");
+	printk(KERN_INFO "Requesting IO access.\n");
 	if (request_mem_region(GPIO_PC_MODEL, 1, DRIVER_NAME) == NULL ) {
 		printk(KERN_ALERT "Error requesting GPIO_PC_MODEL memory region, already in use?\n");
 		return -1;
