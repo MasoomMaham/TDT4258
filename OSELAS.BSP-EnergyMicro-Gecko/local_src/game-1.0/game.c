@@ -65,9 +65,9 @@ void tearDown_gamepad()
 	fclose(device);
 }
 
-void sigio_handler(int signo)
+void signal_handler(int signaloutput)
 {
-	printf("Signal nr.: %d\n", signo);
+	printf("Signal nr.: %d\n", signaloutput);
 	/*int input = map_input(fgetc(device));
 	switch (input)
 	{
