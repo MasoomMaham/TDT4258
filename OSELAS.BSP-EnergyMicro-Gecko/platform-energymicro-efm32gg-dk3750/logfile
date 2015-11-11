@@ -10167,3 +10167,51 @@ Creating root.romfs from image_working_dir...done.
 
 
 
+{{{ 2015-11-06T11:49:17+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist test flash-rootfs
+
+}}} 2015-11-06T11:49:27+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist test flash-rootfs; (exit value: 255)
+
+
+
+{{{ 2015-11-06T14:16:18+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist clean driver-gamepad
+
+----------------------------
+target: driver-gamepad.clean
+----------------------------
+
+Deleting stage files:
+/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/state/driver-gamepad.extract
+/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/state/driver-gamepad.extract.post
+/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/state/driver-gamepad.get
+/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/state/driver-gamepad.prepare
+
+Deleting src dir:
+/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/build-target/driver-gamepad-1.0
+
+
+}}} 2015-11-06T14:16:20+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist clean driver-gamepad; (exit value: 0)
+
+
+
+{{{ 2015-11-06T14:16:27+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist go
+
+-------------------------------
+target: host-pkg-config.install
+-------------------------------
+
+ptxdist: executing: PATH=\/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/lib/wrapper:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/bin:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/sbin:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/selected_toolchain:/opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ex3/ptxdist/bin:/opt/codesourcery/bin:/opt/profiler:/opt/eACommander:/opt/ex3/OSELAS.Toolchain-2012.12.0/arm-cortexm3-uclinuxeabi/gcc-4.7.2-uclibc-0.9.33.2-binutils-2.22-kernel-3.6-sanitized/bin PKG_CONFIG_LIBDIR='/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/lib/pkgconfig:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/share/pkgconfig' SYSROOT='/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host' V=0 VERBOSE=0   make -C /home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/build-host/pkg-config-0.25 DESTDIR="" INSTALL_ROOT="" install -j1
+fakeroot: preload library `libfakeroot.so' not found, aborting.
+make: *** [/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/state/host-pkg-config.install] Error 1
+
+}}} 2015-11-06T14:16:29+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist go; (exit value: 2)
+
+
+
+{{{ 2015-11-06T14:16:59+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist image root.romfs
+fakeroot: preload library `libfakeroot.so' not found, aborting.
+make: *** [/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/state/image_working_dir] Error 1
+
+}}} 2015-11-06T14:17:01+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist image root.romfs; (exit value: 2)
+
+
+

@@ -292,3 +292,5 @@ driver-gamepad.prepare : driver-gamepad.extract.post
 driver-gamepad.compile : driver-gamepad.prepare
 driver-gamepad.compile : driver-gamepad.prepare
 driver-gamepad.compile : driver-gamepad.prepare
+driver-gamepad.clean : FORCE
+host-pkg-config.install : host-pkg-config.compile
