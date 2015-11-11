@@ -1,4 +1,4 @@
-#include "Graphics.h"
+#include "DrawGraphic.h"
 
 int openFrameBuffer;
 int pixelsOnScreen;
