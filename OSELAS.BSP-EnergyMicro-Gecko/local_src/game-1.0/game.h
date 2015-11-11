@@ -4,7 +4,7 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "DrawGraphics.h"
+#include "DrawGraphic.h"
 
 //Prototypes:
 int initialize();
