@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "game.h"
 
 FILE* device;
-
-
+bool active;
+uint8_t last_input;
 
 
 int initialize()
@@ -20,17 +21,16 @@ int initialize()
 		return EXIT_FAILURE;
 	}
 	
-	new_game();
 	return EXIT_SUCCESS;
 }
 
-void deinit()
+void deinitialize()
 {
 	tearDown_gamepad();
 	tearDown_framebuffer();
 }
 
-int init_gamepad()
+int initialize_gamepad()
 {
 	device = fopen("/dev/gamepad", "rb");
 	if (!device) 
@@ -39,7 +39,7 @@ int init_gamepad()
 		return EXIT_FAILURE;
 	}
 
-	if (signal(SingnalHandler, &sigio_handler) == SIGNAL_ERROR)
+	if (signal(SIGIO, &signal_handler) == SIGNAL_ERROR)
 	{
 		printf("ERROR: Failed while register a signal handler.\n");
 		return EXIT_FAILURE;
@@ -63,4 +63,63 @@ int init_gamepad()
 void tearDown_gamepad()
 {
 	fclose(device);
+}
+
+void sigio_handler(int signo)
+{
+	printf("Signal nr.: %d\n", signo);
+	/*int input = map_input(fgetc(device));
+	switch (input)
+	{
+		case 1:
+			left();
+			break;
+		case 2:
+			up();
+			break;
+		case 3:
+			right();
+			break;
+		case 4:
+			down();
+			break;
+		case 6:
+			if (last_input == 6)
+			{
+				new_game();
+			}
+		
+		break;
+		case 8:
+			if (last_input == 8)
+			{
+				active = false;
+			}
+			break;
+	}
+
+	last_input = input;
+	
+}*/
+
+int main()
+{
+	if (initialize() == EXIT_FAILURE) 
+	{
+		printf("Error: unable to initialize.\n");
+		return EXIT_FAILURE;
+	}
+	
+	active = true;
+	while (active)
+	{
+		draw_game();
+	
+		refresh_fb();
+		pause();
+	}
+	
+		deinitialize();
+		return EXIT_SUCCESS;
+	}
 }
