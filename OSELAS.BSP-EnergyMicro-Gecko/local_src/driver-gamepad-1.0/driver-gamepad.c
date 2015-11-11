@@ -62,7 +62,7 @@ static ssize_t gamepad_read (struct file* filp , char __user* buffer , size_t co
 	uint32_t buttons;
 	printk(KERN_INFO "Reading buttons from gamepad driver.\n");
 	/*copies buttonstatus from kernelspace to userspace*/
-	buttons = ioread32(GPIO_PC_DIN);
+	buttons = ioread32(portc_mem + GPIO_PC_DIN);
 	copy_to_user(buffer, &buttons, 1);
 	return 1;
 } 
@@ -89,7 +89,7 @@ static ssize_t gamepad_release(struct inode* inode , struct file* filp )
 irqreturn_t gpio_interrupt_handler(int irq, void* dev_id, struct pt_regs* regs)
 {
 	printk(KERN_ALERT "GPIO interrupt handeling.\n");
-	iowrite32(0xff, gpio_mem+GPIO_IFC);
+	iowrite32(gpio_mem+GPIO_IF, gpio_mem+GPIO_IFC);
 //TO DO: asyncronic queue
 	return IRQ_HANDLED;
 }
