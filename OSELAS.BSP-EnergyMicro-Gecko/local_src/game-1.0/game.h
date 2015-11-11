@@ -4,14 +4,13 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "DrawGraphics.h"
+#include "DrawGraphic.h"
 
 //Prototypes:
 int initialize();
 void deinitialize();
 int initialize_gamepad();
-int initialize_framebuffer();
+int memoryMapDriver();
 void tearDown_gamepad();
-void signal_handler(int signaloutput);
-int signal(void SIGIO,int &signal_handler);
+void signal_handler(int);
 int main();

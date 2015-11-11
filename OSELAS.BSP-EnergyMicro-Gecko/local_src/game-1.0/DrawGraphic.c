@@ -1,5 +1,7 @@
 #include "DrawGraphic.h"
 
+typedef unsigned int uint16_t;
+
 int openFrameBuffer;
 int pixelsOnScreen;
 int totalBytesUsedByScreen;
@@ -28,8 +30,9 @@ int framebuffer()
 	return openFrameBuffer;
 }
 
-void memoryMapDriver()
+int memoryMapDriver()
 {
+	framebuffer();
 	if(ioctl(openFrameBuffer, FBIOGET_VSCREENINFO, &screenInfo) == -1)
 	{
 		printk(KERN_INFO "ERROR: Could not retrive the screen info\n");

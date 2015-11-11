@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "game.h"
 
+
 FILE* device;
 bool active;
 uint8_t last_input;
@@ -12,10 +13,10 @@ int initialize()
 	if(initialize_gamepad() == EXIT_FAILURE)
 	{
 		printf("ERROR: Could not initiate the gamepad!");
-		return EXIT_FAILURE
+		return EXIT_FAILURE;
 	}
 
-	if (initialize_framebuffer() == EXIT_FAILURE)
+	if (memoryMapDriver() == EXIT_FAILURE)
 	{
 		printf("Error: unable to init framebuffer.\n");
 		return EXIT_FAILURE;
@@ -27,7 +28,7 @@ int initialize()
 void deinitialize()
 {
 	tearDown_gamepad();
-	tearDown_framebuffer();
+	disconnect_frameBuffer();
 }
 
 int initialize_gamepad()
@@ -39,7 +40,7 @@ int initialize_gamepad()
 		return EXIT_FAILURE;
 	}
 
-	if (signal(SIGIO, &signal_handler) == SIGNAL_ERROR)
+	if (signal(SIGIO, &signal_handler) == SIG_ERR)
 	{
 		printf("ERROR: Failed while register a signal handler.\n");
 		return EXIT_FAILURE;
@@ -98,9 +99,10 @@ void signal_handler(int signaloutput)
 			break;
 	}
 
-	last_input = input;
+	last_input = input;*/
 	
-}*/
+}
+
 
 int main()
 {
@@ -115,11 +117,10 @@ int main()
 	{
 		draw_game();
 	
-		refresh_fb();
+		updateBufferDriver();
 		pause();
 	}
 	
-		deinitialize();
-		return EXIT_SUCCESS;
-	}
+	deinitialize();
+	return EXIT_SUCCESS;
 }
