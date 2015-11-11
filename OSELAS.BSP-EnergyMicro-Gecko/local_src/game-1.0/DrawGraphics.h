@@ -42,28 +42,16 @@ static uint16_t colors[6] = {Red, Yellow, Green, Blue, Purple, Orange};
 int framebuffer();
 void memoryMapDriver();
 void updateBufferDriver();
-void tearDown_frameBuffer();
+void disconnect_frameBuffer();
 
 void draw_game();
 void draw_Brick(int pen_position_x, int pen_position_y, int width, int height);
 void draw_Ball(int , int ,int radius);
 void draw_Player(int pen_position_x, pen_position_y, int width, int height);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void draw_movedPlayer(int pen_position_x);
+void draw_movedBall(int row, int col, bool ballReleased);
+void ballMovementAfterRelease(int row, int col);
+void fillPixel(int startPosition_x , int startPosition_y, uint16_t fillColor)
 
 
 
