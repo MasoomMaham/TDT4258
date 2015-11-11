@@ -1,0 +1,85 @@
+make[1]: Entering directory `/home/tdt4258/Desktop/OSELAS.BSP-EnergyMicro-Gecko/local_src/game-1.0'
+arm-cortexm3-uclinuxeabi-gcc -O2 -g -Wall    -c -o DrawGraphic.o DrawGraphic.c
+DrawGraphic.c: In function 'framebuffer':
+DrawGraphic.c:23:2: warning: implicit declaration of function 'open' [-Wimplicit-function-declaration]
+DrawGraphic.c:23:37: error: 'O_RDWR' undeclared (first use in this function)
+DrawGraphic.c:23:37: note: each undeclared identifier is reported only once for each function it appears in
+DrawGraphic.c:26:3: warning: implicit declaration of function 'printk' [-Wimplicit-function-declaration]
+DrawGraphic.c:26:10: error: 'KERN_INFO' undeclared (first use in this function)
+DrawGraphic.c:26:20: error: expected ')' before string constant
+DrawGraphic.c: In function 'memoryMapDriver':
+DrawGraphic.c:36:2: warning: implicit declaration of function 'ioctl' [-Wimplicit-function-declaration]
+DrawGraphic.c:36:28: error: 'FBIOGET_VSCREENINFO' undeclared (first use in this function)
+DrawGraphic.c:38:10: error: 'KERN_INFO' undeclared (first use in this function)
+DrawGraphic.c:38:20: error: expected ')' before string constant
+DrawGraphic.c:39:22: error: expected ';' before ':' token
+DrawGraphic.c:42:2: error: invalid use of undefined type 'struct fb_var_screeninfo'
+DrawGraphic.c:42:2: error: invalid use of undefined type 'struct fb_var_screeninfo'
+DrawGraphic.c:42:2: error: invalid use of undefined type 'struct fb_var_screeninfo'
+DrawGraphic.c:44:8: error: request for member 'dx' in something not a structure or union
+DrawGraphic.c:45:8: error: request for member 'dy' in something not a structure or union
+DrawGraphic.c:46:8: error: request for member 'width' in something not a structure or union
+DrawGraphic.c:46:2: error: invalid use of undefined type 'struct fb_var_screeninfo'
+DrawGraphic.c:47:8: error: request for member 'height' in something not a structure or union
+DrawGraphic.c:47:2: error: invalid use of undefined type 'struct fb_var_screeninfo'
+DrawGraphic.c:49:25: error: request for member 'width' in something not a structure or union
+DrawGraphic.c:49:40: error: request for member 'height' in something not a structure or union
+DrawGraphic.c:50:2: error: invalid use of undefined type 'struct fb_var_screeninfo'
+DrawGraphic.c:52:2: warning: implicit declaration of function 'mmap' [-Wimplicit-function-declaration]
+DrawGraphic.c:52:66: error: 'PROT_READ' undeclared (first use in this function)
+DrawGraphic.c:52:76: error: 'PROT_WRITE' undeclared (first use in this function)
+DrawGraphic.c:52:88: error: 'MAP_SHARED' undeclared (first use in this function)
+DrawGraphic.c:53:20: error: 'MAP_FAILED' undeclared (first use in this function)
+DrawGraphic.c:55:20: error: expected ')' before string constant
+DrawGraphic.c:59:2: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:59:2: note: use option -std=c99 or -std=gnu99 to compile your code
+DrawGraphic.c: In function 'updateBufferDriver':
+DrawGraphic.c:70:1: error: expected ';' before '}' token
+DrawGraphic.c: In function 'disconnect_frameBuffer':
+DrawGraphic.c:74:2: warning: implicit declaration of function 'munmap' [-Wimplicit-function-declaration]
+DrawGraphic.c:75:2: warning: implicit declaration of function 'close' [-Wimplicit-function-declaration]
+DrawGraphic.c: At top level:
+DrawGraphic.c:79:1: error: expected identifier or '(' before '{' token
+DrawGraphic.c:119:1: error: expected identifier or '(' before '{' token
+DrawGraphic.c:130:37: error: unknown type name 'startPosition_y'
+DrawGraphic.c:130:54: error: unknown type name 'endPosition_x'
+DrawGraphic.c:130:69: error: unknown type name 'endPosition_y'
+DrawGraphic.c: In function 'draw_Ball':
+DrawGraphic.c:160:2: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:162:3: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c: At top level:
+DrawGraphic.c:174:1: error: expected identifier or '(' before '{' token
+DrawGraphic.c: In function 'draw_movedPlayer':
+DrawGraphic.c:190:7: warning: unused variable 'penDrawLength_x' [-Wunused-variable]
+DrawGraphic.c:195:7: warning: unused variable 'penDrawLength_x' [-Wunused-variable]
+DrawGraphic.c:198:24: error: 'screenHeight' undeclared (first use in this function)
+DrawGraphic.c:198:61: error: 'PlayerHeight' undeclared (first use in this function)
+DrawGraphic.c:199:24: error: 'pen_position_y' undeclared (first use in this function)
+DrawGraphic.c:201:3: warning: implicit declaration of function 'draw_line' [-Wimplicit-function-declaration]
+DrawGraphic.c:201:46: error: 'penDrawLength_x' undeclared (first use in this function)
+DrawGraphic.c: In function 'draw_movedBall':
+DrawGraphic.c:220:3: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:222:4: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:237:3: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:239:4: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:243:43: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+DrawGraphic.c:243:66: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+DrawGraphic.c:243:74: error: expected ')' before ';' token
+DrawGraphic.c:244:5: error: too few arguments to function 'fillPixel'
+DrawGraphic.c:152:6: note: declared here
+DrawGraphic.c:244:5: error: expected ';' before '}' token
+DrawGraphic.c: In function 'ballMovementAfterRelease':
+DrawGraphic.c:255:2: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:257:4: error: 'for' loop initial declarations are only allowed in C99 mode
+DrawGraphic.c:261:43: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+DrawGraphic.c:261:66: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+DrawGraphic.c:261:74: error: expected ')' before ';' token
+DrawGraphic.c:262:5: error: too few arguments to function 'fillPixel'
+DrawGraphic.c:152:6: note: declared here
+DrawGraphic.c:262:5: error: expected ';' before '}' token
+DrawGraphic.c: In function 'draw_movedPlayer':
+DrawGraphic.c:266:1: error: expected declaration or statement at end of input
+In file included from DrawGraphic.c:1:0:
+DrawGraphic.c: At top level:
+DrawGraphic.h:43:17: warning: 'colors' defined but not used [-Wunused-variable]
+
