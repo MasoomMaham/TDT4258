@@ -1,4 +1,4 @@
-#include <Graphics.h>
+#include "Graphics.h"
 
 int openFrameBuffer;
 int pixelsOnScreen;
@@ -6,6 +6,15 @@ int totalBytesUsedByScreen;
 uint16_t *screen;
 struct fb_var_screeninfo screenInfo;
 struct fb_copyarea screenArea;
+
+int playerWidthStart = ((screen_width/2) - (PLAYER_WIDTH/2));
+int playerWidthEnd = ((screen_width/2) + (PLAYER_WIDTH/2));
+int playerHeightStart = screen_height - (screenBottom_margin + PLAYER_HEIGHT);
+
+int ballCenter = (screen_width/2);
+int ballRowLocation = screen_height - (PLAYER_HEIGHT + (BALL_RADIUS));  
+
+bool ballStickedToPlayer = false;
 
 int framebuffer()
 {
@@ -27,7 +36,7 @@ void memoryMapDriver()
 		return EXIT_FAILURE:
 	}
 
-	printf("Screeninfo: %d x %d, %dbpp\n", screenInfo.xres, screenInfo.yres, screenInfo.bits_per_pixel):
+	printf("Screeninfo: %d x %d, %dbpp\n", screenInfo.xres, screenInfo.yres, screenInfo.bits_per_pixel);
 	
 	screen.dx = 0;
 	screen.dy = 0;
@@ -144,7 +153,7 @@ void fillPixel(int startPosition_x , int startPosition_y, uint16_t fillColor)
 
 void draw_Ball(int row, int col, int radius)
 {
-	int diameter = radius * radius
+	int diameter = radius * radius;
 	for(int dy = -radius; dy <= radius; dy++)
 	{
 		for(int dx = -radius; dx <= radius; dx++)
@@ -170,34 +179,86 @@ void draw_Player(int pen_position_x, int pen_position_y, int width, int height);
 	}
 }	
 
+void draw_movedPlayer(int pen_position_x)
+{
+	int movePenDistance = 0;
+	if(pen_position_x >= 0)
+	{
+		int penDrawLength_x = playerWidthStart + pen_position_x + (PLAYER_WIDTH/2);
+	}
+	
+	else if(pen_position_x < 0)
+	{
+		int penDrawLength_x = playerWidthStart - pen_position_x - (PLAYER_WIDTH/2);
+	}
+	
+	int penDrawLength_y = screenHeight - screenBottom_margin - PlayerHeight;
+	for(movePenDistance = pen_position_y; movePenDistance < penDrawLength_y; movePenDistance++)
+	{
+		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance);	
+}
 
+void draw_movedBall(int row, int col, bool ballReleased)
+{	
+	
+	if(col < 0)
+	{
+		ballCenter -= col;
+	}
+		
+	else
+	{
+		ballCenter += col;		
+	}
 
+	if(!ballReleased)
+	{
+		int diameter = BALL_RADIUS * BALL_RADIUS;
+		for(int dy = -BALL_RADIUS; dy <= BALL_RADIUS; dy++)
+		{
+			for(int dx = -BALL_RADIUS; dx <= BALL_RADIUS; dx++)
+			{
+				if((dx*dx + dy*dy) <= diameter)
+				{
+					fillPixel((screen_height - (PLAYER_HEIGHT + (BALL_RADIUS))) + diameter, ballCenter + diameter, White); 
+				}
+			}
+		} 
+	}
 
+	else
+	{
+		ballStickedToPlayer = ballReleased;
+		ballRowLocation -= row;
+		int diameter = BALL_RADIUS * BALL_RADIUS;
+		for(int dy = -BALL_RADIUS; dy <= BALL_RADIUS; dy++)
+		{
+			for(int dx = -BALL_RADIUS; dx <= BALL_RADIUS; dx++)
+			{
+				if((dx*dx + dy*dy) <= diameter)
+				{
+					fillPixel((ballRowLocation + diameter, ballCenter + diameter, White); 
+				}
+			}
+		} 
+	}
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
+void ballMovementAfterRelease(int row, int col)
+{
+	ballRowLocation -= row;
+	ballCenter += col;
+	int diameter = BALL_RADIUS * BALL_RADIUS;
+	for(int dy = -BALL_RADIUS; dy <= BALL_RADIUS; dy++)
+		{
+			for(int dx = -BALL_RADIUS; dx <= BALL_RADIUS; dx++)
+			{
+				if((dx*dx + dy*dy) <= diameter)
+				{
+					fillPixel((ballRowLocation + diameter, ballCenter + diameter, White); 
+				}
+			}
+		} 
+	 
+}
 
