@@ -4,9 +4,13 @@
 #include <stdbool.h>
 #include <asm/types.h>
 
+<<<<<<< HEAD
 typedef unsigned int uint16_t;
 typedef unsigned int uint8_t;
 
+
+=======
+>>>>>>> eb9ff4fbc16b62fefb630455bd24b6f29b47c084
 #define Black     0x0000
 #define LightGrey 0xA6A6A6
 #define Red       0xFF0700
@@ -15,7 +19,11 @@ typedef unsigned int uint8_t;
 #define Blue      0x003FC4
 #define Purple    0x8C003C
 #define Orange    0xFFA100
+<<<<<<< HEAD
 #define White	  0xFFFFFF
+=======
+#define White	    0xFFFFFF
+>>>>>>> eb9ff4fbc16b62fefb630455bd24b6f29b47c084
 
 #define BACKGROUND_COLOR1 Black
 
