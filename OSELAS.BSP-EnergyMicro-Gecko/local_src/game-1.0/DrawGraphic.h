@@ -4,15 +4,15 @@
 #include <stdbool.h>
 #include <asm/types.h>
 
-#define Black     #0000
-#define LightGrey #A6A6A6
-#define Red       #FF0700
-#define Yellow    #FFFF00
-#define Green     #00DC00
-#define Blue      #003FC4
-#define Purple    #8C003C
-#define Orange    #FFA100
-#define White	  #FFFFFF
+#define Black     0x0000
+#define LightGrey 0xA6A6A6
+#define Red       0xFF0700
+#define Yellow    0xFFFF00
+#define Green     0x00DC00
+#define Blue      0x003FC4
+#define Purple    0x8C003C
+#define Orange    0xFFA100
+#define White	    0xFFFFFF
 
 #define BACKGROUND_COLOR1 Black
 
