@@ -10215,3 +10215,34 @@ make: *** [/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicr
 
 
 
+{{{ 2015-11-11T11:12:49+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist clean driver-gamepad
+
+----------------------------
+target: driver-gamepad.clean
+----------------------------
+
+
+}}} 2015-11-11T11:12:51+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist clean driver-gamepad; (exit value: 0)
+
+
+
+{{{ 2015-11-11T11:13:31+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist compile driver-gamepad
+
+--------------------------
+target: driver-gamepad.get
+--------------------------
+
+finished target driver-gamepad.get
+
+-------------------------------
+target: host-pkg-config.install
+-------------------------------
+
+ptxdist: executing: PATH=\/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/lib/wrapper:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/bin:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/sbin:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/selected_toolchain:/opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ex3/ptxdist/bin:/opt/codesourcery/bin:/opt/profiler:/opt/eACommander:/opt/ex3/OSELAS.Toolchain-2012.12.0/arm-cortexm3-uclinuxeabi/gcc-4.7.2-uclibc-0.9.33.2-binutils-2.22-kernel-3.6-sanitized/bin PKG_CONFIG_LIBDIR='/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/lib/pkgconfig:/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host/share/pkgconfig' SYSROOT='/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/sysroot-host' V=0 VERBOSE=0   make -C /home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/build-host/pkg-config-0.25 DESTDIR="" INSTALL_ROOT="" install -j1
+fakeroot: preload library `libfakeroot.so' not found, aborting.
+make: *** [/home/tdt4258/git/TDT4258-Low-Level-Programming/OSELAS.BSP-EnergyMicro-Gecko/platform-energymicro-efm32gg-dk3750/state/host-pkg-config.install] Error 1
+
+}}} 2015-11-11T11:13:33+0100 /opt/ex3/ptxdist-2013/lib/ptxdist-2013.07.1/bin/ptxdist compile driver-gamepad; (exit value: 2)
+
+
+

@@ -16,7 +16,7 @@
 #include <asm/signal.h> //?
 #include <asm/siginfo.h> //?
 #include <asm/io.h>
-#include "efm32gg.h"
+#include "driver-gamepad.h"
 
 #define DRIVER_NAME "driver_name"
 #define CLASS_NAME "gamepad_class"
@@ -140,8 +140,9 @@ static int __init gamepad_init(void)
 
 	/* Initialize cdev */
 	printk(KERN_INFO "Initializing cdev.\n");
-	cdev_init(&gamepad_cdev, &gamepad_fops);
-	gamepad_cdev.owner = THIS_MODULE;
+	gamepad_cdev = cdev_alloc();
+	gamepad_cdev->owner = THIS_MODULE;
+	gamepad_cdev->ops = &gamepad_fops;
 	cdev_add(&gamepad_cdev, dev_num, DEV_NUM_COUNT);
 	
 	/* Create class and device */
