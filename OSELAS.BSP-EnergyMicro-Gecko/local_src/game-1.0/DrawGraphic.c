@@ -1,6 +1,6 @@
 #include "DrawGraphic.h"
 
-int openFrameBuffer;
+FILE* openFrameBuffer;
 int pixelsOnScreen;
 int totalBytesUsedByScreen;
 uint16_t *screen;
@@ -18,7 +18,7 @@ bool ballStickedToPlayer = false;
 
 int framebuffer()
 {
-	openFrameBuffer = (int)fopen("/dev/fb0", O_RDWR);
+	openFrameBuffer = fopen("/dev/fb0", O_RDWR);
 	if(!openFrameBuffer)
 	{
 		printf("Could not open the file fb0 or use the framebuffer\n");
@@ -47,7 +47,7 @@ int memoryMapDriver()
 	pixelsOnScreen = screenArea.width * screenArea.height;
 	totalBytesUsedByScreen = pixelsOnScreen * screenInfo.bits_per_pixel / 8;	
 
-	(uintptr_t) screen = mmap(NULL, totalBytesUsedByScreen, PROT_READ|PROT_WRITE, MAP_SHARED, openFrameBuffer, 0);
+	screen = (uint16_t)mmap(NULL, totalBytesUsedByScreen, PROT_READ|PROT_WRITE, MAP_SHARED, openFrameBuffer, 0);
 	if((uintptr_t)screen == (uintptr_t)MAP_FAILED)
 	{
 		printf("Memorymap the framebuffer most likely failed\n");
