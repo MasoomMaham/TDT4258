@@ -1,21 +1,23 @@
-
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <linux/fb.h>
+#include <sys/ioctl.h>
 #include <asm/types.h>
 
-typedef unsigned int uint16_t;
-typedef unsigned int uint8_t;
-
-#define Black     0x0000
-#define LightGrey 0xA6A6A6
-#define Red       0xFF0700
-#define Yellow    0xFFFF00
-#define Green     0x00DC00
-#define Blue      0x003FC4
-#define Purple    0x8C003C
-#define Orange    0xFFA100
-#define White	  0xFFFFFF
+#define Black 		0x0000
+#define LightGrey 	0xC618
+#define Red 		0xF800
+#define Yellow 		0xFFE0
+#define Green 		0x07E0
+#define Blue 		0x001F
+#define Purple 		0x780F
+#define Orange 		0xFD20
+#define White		0xFFFF
 
 #define BACKGROUND_COLOR1 Black
 
@@ -24,6 +26,7 @@ typedef unsigned int uint8_t;
 
 #define screenWidth_margin 50
 #define screenHeight_margin 30
+
 #define brickWidth_margin 1
 #define brickHeight_margin 1
 #define screenBottom_margin 5
@@ -55,6 +58,3 @@ void draw_movedPlayer(int);
 void draw_movedBall(int, int, bool);
 void ballMovementAfterRelease(int, int);
 void fillPixel(int, int, uint16_t);
-
-
-
