@@ -49,9 +49,12 @@ int framebuffer();
 int memoryMapDriver();
 void updateBufferDriver();
 void disconnect_frameBuffer();
+void fillBackground();
 
 void draw_game();
+void draw_line(int, int, int, int, bool)
 void draw_Brick(int, int, int, int);
+void fillPreviousAnimation(int);
 void draw_Ball(int , int ,int);
 void draw_Player(int, int, int, int);
 void draw_movedPlayer(int);
