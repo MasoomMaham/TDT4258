@@ -14,4 +14,15 @@ int memoryMapDriver();
 void tearDown_gamepad();
 void signal_handler(int);
 
+void new_game();
+void movePlayerRight();
+void movePlayerLeft();
+void playBallInRandomDirection();
+void releaseBall();
+void ballInPlay();
+bool detectHitWall();
+bool detectHitBrick();
+bool detectHitPlayer();
+bool detectGameOver();
+
 int main();
