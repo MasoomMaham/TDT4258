@@ -1,6 +1,6 @@
 #include "DrawGraphic.h"
 
-FILE* openFrameBuffer;
+int openFrameBuffer;
 int pixelsOnScreen;
 int totalBytesUsedByScreen;
 uint16_t *screen;
@@ -13,8 +13,6 @@ int playerHeightStart = screen_height - (screenBottom_margin + PLAYER_HEIGHT);
 
 int ballCenter = (screen_width/2);
 int ballRowLocation = screen_height - (PLAYER_HEIGHT + (BALL_RADIUS));  
-
-bool ballStickedToPlayer = false;
 
 int framebuffer()
 {
@@ -54,11 +52,7 @@ int memoryMapDriver()
 		return EXIT_FAILURE;
 	}
 	
-	int totalPixels;
-	for (totalPixels = 0; totalPixels < pixelsOnScreen; totalPixels++)
-	{ 
-		screen[totalPixels] = BACKGROUND_COLOR1;
-	}
+	fillBackground();
 
 	return EXIT_SUCCESS;
 }
@@ -66,6 +60,15 @@ int memoryMapDriver()
 void updateBufferDriver()
 {
 	ioctl(openFrameBuffer, 0x4680, &screenArea);
+}
+
+void fillBackground()
+{
+	int totalPixels;
+	for (totalPixels = 0; totalPixels < pixelsOnScreen; totalPixels++)
+	{ 
+		screen[totalPixels] = BACKGROUND_COLOR1;
+	}
 }
 
 void disconnect_frameBuffer()
@@ -116,10 +119,21 @@ void draw_game()
 	}
 }
 
-void draw_line(int startPosition_x, int startPosition_y, int endPosition_x, int endPosition_y)
+void draw_line(int startPosition_x, int startPosition_y, int endPosition_x, int endPosition_y, bool brick)
 {
-	int randomColor = rand() % 6;
-	uint16_t fillColor = colors[randomColor]; 
+	uint16_t fillColor;
+
+	if(brick)
+	{
+		int randomColor = rand() % 6;
+		fillColor = colors[randomColor]; 
+	}
+	
+	else
+	{
+		fillColor = LightGray;
+	}
+
 	bool finish = false;
 	while(!finish)
 	{
@@ -144,13 +158,31 @@ void draw_Brick(int pen_position_x, int pen_position_y, int width, int height)
 	
 	for(movePenDistance = pen_position_y; movePenDistance < penDrawLength_y; movePenDistance++)
 	{
-		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance);
+		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance, true);
 	}	
 }
 
 void fillPixel(int startPosition_x , int startPosition_y, uint16_t fillColor)
 {
 	screen[startPosition_y * screen_width + startPosition_x] = fillColor; 
+}
+
+void fillPreviousAnimation(int fillArea)
+{
+	if(fillArea == 1)
+	{
+		screen[playerHeightStart * PLAYER_WIDTH + playerWidthStart] = BACKGROUND_COLOR1;
+	}
+	
+	else if(fillArea == 2)
+	{
+		screen[ballRowLocation * BALL_RADIUS + ballCenter] = BACKGROUND_COLOR1;		
+	}
+	
+	else
+	{
+		screen[ballRowLocation * BALL_RADIUS + ballCenter] = BACKGROUND_COLOR1;
+	}
 }
 
 void draw_Ball(int row, int col, int radius)
@@ -179,7 +211,7 @@ void draw_Player(int pen_position_x, int pen_position_y, int width, int height)
 	
 	for(movePenDistance = pen_position_y; movePenDistance < penDrawLength_y; movePenDistance++)
 	{
-		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance);
+		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance, false);
 	}
 }	
 
@@ -190,20 +222,22 @@ void draw_movedPlayer(int pen_position_x)
 	if(pen_position_x >= 0)
 	{
 		penDrawLength_x = playerWidthStart + pen_position_x;
+		playerWidthStart = penDrawLength_x;
 	}
 	
 	else if(pen_position_x < 0)
 	{
 		penDrawLength_x = playerWidthStart - pen_position_x;
+		playerWidthStart = penDrawLength_x;
 	}
 	
 	int penDrawLength_y = screen_height - screenBottom_margin - PLAYER_HEIGHT;
 	for(movePenDistance = penDrawLength_y; movePenDistance < (penDrawLength_y + PLAYER_HEIGHT); movePenDistance++)
 	{
-		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance);	
+		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance, false);	
 }
 
-void draw_movedBall(int row, int col, bool ballReleased)
+void draw_movedBall(int row, int col)
 {	
 
 	int dy;
@@ -219,41 +253,22 @@ void draw_movedBall(int row, int col, bool ballReleased)
 		ballCenter += col;		
 	}
 
-	if(!ballReleased)
+	for(dy = -BALL_RADIUS; dy <= BALL_RADIUS; dy++)
 	{
-		for(dy = -BALL_RADIUS; dy <= BALL_RADIUS; dy++)
+		for(dx = -BALL_RADIUS; dx <= BALL_RADIUS; dx++)
 		{
-			for(dx = -BALL_RADIUS; dx <= BALL_RADIUS; dx++)
+			if((dx*dx + dy*dy) <= diameter)
 			{
-				if((dx*dx + dy*dy) <= diameter)
-				{
-					fillPixel((screen_height - (PLAYER_HEIGHT + (BALL_RADIUS))) + diameter, ballCenter + diameter, White); 
-				}
+				fillPixel((screen_height - (PLAYER_HEIGHT + (BALL_RADIUS))) + diameter, ballCenter + diameter, White); 
 			}
-		} 
-	}
-
-	else
-	{
-		ballStickedToPlayer = ballReleased;
-		ballRowLocation -= row;
-		for(dy = -BALL_RADIUS; dy <= BALL_RADIUS; dy++)
-		{
-			for(dx = -BALL_RADIUS; dx <= BALL_RADIUS; dx++)
-			{
-				if((dx*dx + dy*dy) <= diameter)
-				{
-					fillPixel(ballRowLocation + diameter, ballCenter + diameter, White); 
-				}
-			}
-		} 
-	}
+		}
+	} 
 }
 
 void ballMovementAfterRelease(int row, int col)
 {
-	ballRowLocation -= row;
-	ballCenter += col;
+	ballRowLocation = row;
+	ballCenter = col;
 	int dy;
 	int dx;
 	int diameter = BALL_RADIUS * BALL_RADIUS;
