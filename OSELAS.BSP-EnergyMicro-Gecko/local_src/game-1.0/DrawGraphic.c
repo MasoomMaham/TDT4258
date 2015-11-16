@@ -7,12 +7,12 @@ uint16_t *screen;
 struct fb_var_screeninfo screenInfo;
 struct fb_copyarea screenArea;
 
-int playerWidthStart = ((screen_width/2) - (PLAYER_WIDTH/2));
-int playerWidthEnd = ((screen_width/2) + (PLAYER_WIDTH/2));
-int playerHeightStart = screen_height - (screenBottom_margin + PLAYER_HEIGHT);
+extern int playerWidthStart = ((screen_width/2) - (PLAYER_WIDTH/2));
+extern int playerWidthEnd = ((screen_width/2) + (PLAYER_WIDTH/2)); 
+extern int playerHeightStart = screen_height - (screenBottom_margin + PLAYER_HEIGHT);
 
-int ballCenter = (screen_width/2);
-int ballRowLocation = screen_height - (PLAYER_HEIGHT + (BALL_RADIUS));  
+extern int ballCenter = (screen_width/2);
+extern int ballRowLocation = screen_height - (PLAYER_HEIGHT + (BALL_RADIUS));  
 
 int framebuffer()
 {
@@ -52,7 +52,7 @@ int memoryMapDriver()
 		return EXIT_FAILURE;
 	}
 	
-	fillBackground();
+	fill_Background();
 
 	return EXIT_SUCCESS;
 }
@@ -62,7 +62,7 @@ void updateBufferDriver()
 	ioctl(openFrameBuffer, 0x4680, &screenArea);
 }
 
-void fillBackground()
+void fill_Background()
 {
 	int totalPixels;
 	for (totalPixels = 0; totalPixels < pixelsOnScreen; totalPixels++)
@@ -118,6 +118,7 @@ void draw_game()
 		}
 	}
 }
+
 
 void draw_line(int startPosition_x, int startPosition_y, int endPosition_x, int endPosition_y, bool brick)
 {
@@ -234,7 +235,8 @@ void draw_movedPlayer(int pen_position_x)
 	int penDrawLength_y = screen_height - screenBottom_margin - PLAYER_HEIGHT;
 	for(movePenDistance = penDrawLength_y; movePenDistance < (penDrawLength_y + PLAYER_HEIGHT); movePenDistance++)
 	{
-		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance, false);	
+		draw_line(pen_position_x, movePenDistance, penDrawLength_x, movePenDistance, false);
+	}	
 }
 
 void draw_movedBall(int row, int col)
@@ -282,6 +284,5 @@ void ballMovementAfterRelease(int row, int col)
 			}
 		}
 	} 	 
-}
 }
 
