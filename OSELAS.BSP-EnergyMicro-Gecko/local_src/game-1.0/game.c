@@ -28,6 +28,9 @@ int ballCenter = (screen_width/2);
 bool ballReleased = false;
 bool ballOut = false;
 
+int hitDirection_dx;
+int hitDirection_dy;
+
 bool positiveDirection;
 
 
@@ -274,7 +277,9 @@ void ballInPlay()
 				{
 					ballSpeed_dx = originBallSpeed_dx;
 				} 
-			} 		
+			}
+			
+			removeBrick(hitDirection_dx, hitDirection_dy); 		
 		}
 		
 		else if(detectHitPlayer())
@@ -284,6 +289,7 @@ void ballInPlay()
 		
 		else if(detectGameOver())
 		{
+			ballOut = false;
 			new_game();
 		}
 
@@ -295,6 +301,10 @@ void ballInPlay()
 		}
 	}
 }
+
+/*void removeBrick(int hitDirection_dx, int hitDirection_dy)
+{
+}*/
 
 bool detectHitWall()
 {
@@ -357,22 +367,31 @@ bool detectHitBrick()
 {
 	if(ballRowLocation + ballSpeed_dy <= (screenHeight_margin + screen_sectors_y_axis + BALL_RADIUS) && ballRowLocation + ballSpeed_dy >=  (screenHeight_margin - BALL_RADIUS)&& ballCenter + ballSpeed_dx >= ((screenWidth_margin/2) - BALL_RADIUS) && ballCenter + ballSpeed_dx <= (screen_width - (screenWidth_margin/2) + BALL_RADIUS)
 	{	
-		int col;
-		int row;	
+		int col = 0;
+		int row = 0;	
 
 		if((ballSpeed_dy < 0 && ballSpeed dx < 0) || (ballSpeed_dy > 0 && ballSpeed dx < 0))
 		{
-			for(col = ballCenter - BALL_RADIUS; col > (ballCenter - BALL_RADIUS - ballSpeed_dx); col--)
+			for(col = ballCenter; col > (ballCenter + ballSpeed_dx); col--)
 			{
+				if(((col - 1) - BALL_RADIUS) != BACKGROUND_COLOR1)
+				{
+					hitDirection_dx = (col - BALL_RADIUS) - 1;
+					hitDirection_dy = row;
+					ballSpeed_dx = -ballSpeed_dx;
+					return true;
+				}
+						{
 				if(ballSpeed_dy < 0)
 				{
-					for(row = ballRowLocation - BALL_RADIUS; row < ((ballCenter - BALL_RADIUS) - col); row--)
+					for(row = 0; row > (col - ballCenter); row--)
 					{
-						if(row != BACKGROUND_COLOR1)
-						{
-							ballRowLoctaion = row + BALL_RADIUS;
-							ballCenter = (col + BALL_RADIUS);
-							ballSpeed_dy = -ballSpeed_dy
+						if(((row - 1) - BALL_RADIUS) != BACKGROUND_COLOR1)
+						{	
+							hitDirection_dy = (row - BALL_RADIUS) - 1;
+							ballRowLocation += (row - 1);
+							ballCenter = (col - 1);
+							ballSpeed_dy = -ballSpeed_dy;
 							return true;
 						}
 						
@@ -385,12 +404,13 @@ bool detectHitBrick()
 				
 				else
 				{
-					for(row = ballRowLocation + BALL_RADIUS; row < ((ballCenter - BALL_RADIUS) - col); row++)
+					for(row = 0; row < (ballCenter - col); row++)
 					{
-						if(row != BACKGROUND_COLOR1)
-						{
-							ballRowLoctaion = (row - BALL_RADIUS);
-							ballCenter = (col + BALL_RADIUS);
+						if(((row + 1) + BALL_RADIUS) != BACKGROUND_COLOR1)
+						{	
+							hitDirection_dy = (row + BALL_RADIUS) + 1;
+							ballRowLocation += (row + 1);
+							ballCenter = (col - 1);
 							ballSpeed_dy = -ballSpeed_dy;
 							return true;
 						}
@@ -406,16 +426,25 @@ bool detectHitBrick()
 		
 		else if((ballSpeed_dy < 0 && ballSpeed_dx > 0) || (ballSpeed_dy > 0 && ballSpeed_dx > 0))
 		{
-			for(col = ballCenter + BALL_RADIUS; col < (ballCenter + BALL_RADIUS + ballSpeed_dx; col++)
+			for(col = ballCenter; col < (ballCenter + ballSpeed_dx); col++)
 			{
+				if(((col + 1) + BALL_RADIUS) != BACKGROUND_COLOR1)
+				{
+					hitDirection_dx = (col + BALL_RADIUS) + 1;
+					hitDirection_dy = row + ballRowLocation;
+					ballSpeed_dx = -ballSpeed_dx;
+					return true;
+				}
+
 				if(ballSpeed_dy < 0)
 				{
-					for(row = ballRowLocation - BALL_RADIUS; row < (col - (ballCenter + BALL_RADIUS)); row--)
+					for(row = 0; row > (ballCenter - col); row--)
 					{
-						if(row != BACKGROUND_COLOR1)
-						{
-							ballRowLoctaion = (row + BALL_RADIUS);
-							ballCenter = (col - BALL_RADIUS);
+						if(((row - 1) - BALL_RADIUS) != BACKGROUND_COLOR1)
+						{	
+							hitDirection_dy = (row - BALL_RADIUS) - 1;
+							ballRowLocation += (row - 1);
+							ballCenter = (col + 1);
 							ballSpeed_dy = -ballSpeed_dy;
 							return true;
 						}
@@ -429,12 +458,13 @@ bool detectHitBrick()
 
 				else
 				{
-					for(row = ballRowLocation + BALL_RADIUS; row < (col - (ballCenter + BALL_RADIUS)); row++)
+					for(row = 0; row < (col - ballCenter); row++)
 					{
-						if(row != BACKGROUND_COLOR1)
-						{
-							ballRowLoctaion = (row - BALL_RADIUS);
-							ballCenter = (col - BALL_RADIUS);
+						if(((row + 1) + BALL_RADIUS) != BACKGROUND_COLOR1)
+						{	
+							hitDirection_dy = (row + BALL_RADIUS) + 1;
+							ballRowLocation += (row + 1);
+							ballCenter = (col + 1);
 							ballSpeed_dy = -ballSpeed_dy;
 							return true;
 						}
