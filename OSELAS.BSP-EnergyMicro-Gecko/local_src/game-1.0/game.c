@@ -91,10 +91,39 @@ void tearDown_gamepad()
 	fclose(device);
 }
 
+int button_input(int button)
+{
+	input = ~button;
+	if(input == 0x10)		//if-statement checks to see if button SW5 is pressed.
+	{
+		return 5;
+	}
+	
+	else if(input == 0x20)		//if-statement checks to see if button SW6 is pressed.
+	{
+		return 6;
+	}
+	
+	else if(input == 0x80)		//if-statement checks to see if button SW8 is pressed.
+	{	
+		return 8;
+	}
+	
+	else if(input == 0x7)
+	{
+		return 3;
+	}
+
+	else if(input == 0x1)
+	{
+		return 1;
+	}		
+}
+
 void signal_handler(int signaloutput)
 {
 	printf("Signal nr.: %d\n", signaloutput);
-	int input = map_input(fgetc(device));
+	int input = button_input(fgetc(device));
 	switch (input)
 	{
 		case 1:
