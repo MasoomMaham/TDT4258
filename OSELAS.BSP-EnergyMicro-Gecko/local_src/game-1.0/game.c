@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "game.h"
 
 
@@ -12,19 +10,18 @@ int ball = 2;
 int brick = 3;
 
 int moveSpeed = 10;
-int maxMove = (screen_width/moveSpeed);
 int moveRight = (maxMove/2);
 int moveLeft = (maxMove/2);
 
-int playerWidthStart = ((screen_width/2) - (PLAYER_WIDTH/2));
-int playerWidthEnd = ((screen_width/2) + (PLAYER_WIDTH/2));
-int playerHeightStart = screen_height - (screenBottom_margin + PLAYER_HEIGHT);
+extern int playerWidthStart;
+extern int playerWidthEnd;
+extern int playerHeightStart;
 
 int originBallSpeed_dx = 10;
 int ballSpeed_dx;
 int ballSpeed_dy = -10;
-int ballRowLocation = screen_height - (PLAYER_HEIGHT + (BALL_RADIUS));
-int ballCenter = (screen_width/2);
+extern int ballRowLocation;
+extern int ballCenter;
 bool ballReleased = false;
 bool ballOut = false;
 
@@ -42,7 +39,7 @@ int initialize()
 		return EXIT_FAILURE;
 	}
 
-	if (memoryMapDriver() == EXIT_FAILURE)
+	if (memoryMapDriver() != EXIT_SUCCESS)
 	{
 		printf("Error: unable to init framebuffer.\n");
 		return EXIT_FAILURE;
@@ -73,21 +70,15 @@ int initialize_gamepad()
 		return EXIT_FAILURE;
 	}
 	
-	if ((fileno(device), F_SETOWN, getpid()) == -1) {
-		printf("Error: setting pid as owner.\n");
-		return EXIT_FAILURE;
-	}
-	
-	long oflags = fcntl(filefcntlno(device), F_GETFL);
-	if (fcntl(fileno(device), F_SETFL, oflags | FASYNC) == -1)
+	if ((fileno(device), F_SETOWN, getpid()) == -1)
 	{
-		printf("Error setting FASYNC flag.\n");
+		printf("Error: setting pid as owner.\n");
 		return EXIT_FAILURE;
 	}
 		
 		new_game();
 		return EXIT_SUCCESS;
-	}
+}
 
 void tearDown_gamepad()
 {
@@ -96,7 +87,7 @@ void tearDown_gamepad()
 
 int button_input(int button)
 {
-	input = ~button;
+	uint8_t input = ~button;
 	if(input == 0x10)		//if-statement checks to see if button SW5 is pressed.
 	{
 		return 5;
@@ -157,7 +148,7 @@ void signal_handler(int signaloutput)
 
 void new_game()
 {
-	fillBackground();
+	fill_Background();
 	draw_game();
 }
 
@@ -176,7 +167,7 @@ void movePlayerRight()
 		if(!ballReleased)
 		{
 			fillPreviousAnimation(ball);
-			draw_movedBall(ballRowLocation, moveSpeed)
+			draw_movedBall(ballRowLocation, moveSpeed);
 		}
 	
 		moveRight -= 1;
@@ -279,7 +270,7 @@ void ballInPlay()
 				} 
 			}
 			
-			removeBrick(hitDirection_dx, hitDirection_dy); 		
+			//removeBrick(hitDirection_dx, hitDirection_dy); 		
 		}
 		
 		else if(detectHitPlayer())
@@ -308,7 +299,7 @@ void ballInPlay()
 
 bool detectHitWall()
 {
-	if(ballRowLocation - ballSpeed < BALL_RADIUS)
+	if(ballRowLocation - ballSpeed_dy < BALL_RADIUS)
 	{
 		if(ballRowLocation == BALL_RADIUS)
 		{
@@ -324,7 +315,7 @@ bool detectHitWall()
 		}
 	}
 	
-	else if(ballCenter - ballSpeed < BALL_RADIUS)
+	else if(ballCenter - ballSpeed_dx < BALL_RADIUS)
 	{
 		
 		if(ballCenter == BALL_RADIUS)
@@ -341,7 +332,7 @@ bool detectHitWall()
 		}
 	}
 	
-	else if(ballCenter + ballSpeed > screen_width - BALL_RADIUS)
+	else if(ballCenter + ballSpeed_dx > screen_width - BALL_RADIUS)
 	{
 		if(ballCenter == screen_width - BALL_RADIUS)
 		{
@@ -365,12 +356,12 @@ bool detectHitWall()
 
 bool detectHitBrick()
 {
-	if(ballRowLocation + ballSpeed_dy <= (screenHeight_margin + screen_sectors_y_axis + BALL_RADIUS) && ballRowLocation + ballSpeed_dy >=  (screenHeight_margin - BALL_RADIUS)&& ballCenter + ballSpeed_dx >= ((screenWidth_margin/2) - BALL_RADIUS) && ballCenter + ballSpeed_dx <= (screen_width - (screenWidth_margin/2) + BALL_RADIUS)
+	if(ballRowLocation + ballSpeed_dy <= (screenHeight_margin + screen_sectors_y_axis + BALL_RADIUS) && ballRowLocation + ballSpeed_dy >=  (screenHeight_margin - BALL_RADIUS)&& ballCenter + ballSpeed_dx >= ((screenWidth_margin/2) - BALL_RADIUS) && ballCenter + ballSpeed_dx <= (screen_width - (screenWidth_margin/2) + BALL_RADIUS))
 	{	
 		int col = 0;
 		int row = 0;	
 
-		if((ballSpeed_dy < 0 && ballSpeed dx < 0) || (ballSpeed_dy > 0 && ballSpeed dx < 0))
+		if((ballSpeed_dy < 0 && ballSpeed_dx < 0) || (ballSpeed_dy > 0 && ballSpeed_dx < 0))
 		{
 			for(col = ballCenter; col > (ballCenter + ballSpeed_dx); col--)
 			{
@@ -421,9 +412,9 @@ bool detectHitBrick()
 						}
 					}
 				}
-			}
-		} 
-		
+			} 
+		}
+		}
 		else if((ballSpeed_dy < 0 && ballSpeed_dx > 0) || (ballSpeed_dy > 0 && ballSpeed_dx > 0))
 		{
 			for(col = ballCenter; col < (ballCenter + ballSpeed_dx); col++)
@@ -448,11 +439,6 @@ bool detectHitBrick()
 							ballSpeed_dy = -ballSpeed_dy;
 							return true;
 						}
-						
-						else
-						{
-							return false;
-						}
 					}	
 				}
 
@@ -468,18 +454,12 @@ bool detectHitBrick()
 							ballSpeed_dy = -ballSpeed_dy;
 							return true;
 						}
-						
-						else
-						{
-							return false;
-						}
 					}
 				}			
 			}
 		}
 	}
 
-	
 	else
 	{
 		return false;
@@ -488,7 +468,9 @@ bool detectHitBrick()
 
 bool detectHitPlayer()
 {
-	if(ballRowLocation + BALL_RADIUS >= playerHeightStart && ballCenter < playerWidthEnd && ballCenter > playerStartEnd)
+	int col;
+	int row;
+	if(ballRowLocation + BALL_RADIUS >= playerHeightStart && ballCenter < playerWidthEnd && ballCenter > playerWidthStart)
 	{
 		if(ballSpeed_dx < 0)
 		{
@@ -496,48 +478,39 @@ bool detectHitPlayer()
 			{
 				for(row = ballRowLocation + BALL_RADIUS; row < ((ballCenter - BALL_RADIUS) - col); row++)
 				{
-					if(row == LightGray)
+					if(row == LightGrey)
 					{
 						ballCenter = (col + BALL_RADIUS);
 						ballRowLocation = (row - BALL_RADIUS);
 						ballSpeed_dy = -ballSpeed_dy;
 						return true;
 					}
-					
-					else
-					{
-						return false;
-					}
 				}
 			}
 		}
-		
+
 		else
 		{
-			for(col = ballCenter + BALL_RADIUS; col < (ballCenter + BALL_RADIUS + ballSpeed_dx; col++)
+			for(col = ballCenter + BALL_RADIUS; col < (ballCenter + BALL_RADIUS + ballSpeed_dx); col++)
 			{
 				for(row = ballRowLocation + BALL_RADIUS; row < (col - (ballCenter + BALL_RADIUS)); row++)
 				{
-					if(row == LightGray)
+					if(row == LightGrey)
 					{
 						ballCenter = (col - BALL_RADIUS);
 						ballRowLocation = (row - BALL_RADIUS);
 						ballSpeed_dy = -ballSpeed_dy;
 						return true;
 					}
-
-					else
-					{
-						return false;
-					}
 				}
 			}
 		}
+	}
 
 	else
 	{
 		return false;
-	} 
+	}
 }
 
 bool detectGameOver()
