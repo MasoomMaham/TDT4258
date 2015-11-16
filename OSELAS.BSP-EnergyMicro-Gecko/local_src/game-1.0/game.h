@@ -20,6 +20,7 @@ void movePlayerLeft();
 void playBallInRandomDirection();
 void releaseBall();
 void ballInPlay();
+void removeBrick(int, int):
 bool detectHitWall();
 bool detectHitBrick();
 bool detectHitPlayer();
