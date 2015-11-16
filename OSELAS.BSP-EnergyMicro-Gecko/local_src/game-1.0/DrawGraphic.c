@@ -7,23 +7,23 @@ uint16_t *screen;
 struct fb_var_screeninfo screenInfo;
 struct fb_copyarea screenArea;
 
-extern int playerWidthStart = ((screen_width/2) - (PLAYER_WIDTH/2));
-extern int playerWidthEnd = ((screen_width/2) + (PLAYER_WIDTH/2)); 
-extern int playerHeightStart = screen_height - (screenBottom_margin + PLAYER_HEIGHT);
+ int playerWidthStart = ((screen_width/2) - (PLAYER_WIDTH/2));
+ int playerWidthEnd = ((screen_width/2) + (PLAYER_WIDTH/2)); 
+ int playerHeightStart = screen_height - (screenBottom_margin + PLAYER_HEIGHT);
 
-extern int ballCenter = (screen_width/2);
-extern int ballRowLocation = screen_height - (PLAYER_HEIGHT + (BALL_RADIUS));  
+ int ballCenter = (screen_width/2);
+ int ballRowLocation = screen_height - (PLAYER_HEIGHT + (BALL_RADIUS));  
 
 int framebuffer()
 {
-	openFrameBuffer = fopen("/dev/fb0", O_RDWR);
+	openFrameBuffer = open("/dev/fb0", O_RDWR);
 	if(!openFrameBuffer)
 	{
 		printf("Could not open the file fb0 or use the framebuffer\n");
 		return EXIT_FAILURE;
 	}
 	
-	return openFrameBuffer;
+	return 0;
 }
 
 int memoryMapDriver()
@@ -132,7 +132,7 @@ void draw_line(int startPosition_x, int startPosition_y, int endPosition_x, int 
 	
 	else
 	{
-		fillColor = LightGray;
+		fillColor = LightGrey;
 	}
 
 	bool finish = false;
