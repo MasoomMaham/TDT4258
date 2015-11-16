@@ -1,29 +1,64 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "DrawGraphic.h"
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <linux/fb.h>
+#include <sys/ioctl.h>
+#include <asm/types.h>
+
+#define Black 		0x0000
+#define LightGrey 	0xC618
+#define Red 		0xF800
+#define Yellow 		0xFFE0
+#define Green 		0x07E0
+#define Blue 		0x001F
+#define Purple 		0x780F
+#define Orange 		0xFD20
+#define White		0xFFFF
+
+#define BACKGROUND_COLOR1 Black
+
+#define screen_width 320
+#define screen_height 240
+
+#define maxMove screen_width/10
+#define screenWidth_margin 50
+#define screenHeight_margin 30
+
+#define brickWidth_margin 1
+#define brickHeight_margin 1
+#define screenBottom_margin 5
+
+#define screen_sectors_x_axis ((screen_width - screenWidth_margin)/27)
+#define screen_sectors_y_axis ((screen_height - screenHeight_margin)/3)
+
+#define BRICK_WIDTH 9
+#define BRICK_HEIGHT 6
+
+#define PLAYER_WIDTH 10
+#define PLAYER_HEIGHT 3
+
+#define BALL_RADIUS 3
+
+static uint16_t colors[6] = {Red, Yellow, Green, Blue, Purple, Orange};
 
 //Prototypes:
-int initialize();
-void deinitialize();
-int initialize_gamepad();
+int framebuffer();
 int memoryMapDriver();
-void tearDown_gamepad();
-void signal_handler(int);
+void updateBufferDriver();
+void disconnect_frameBuffer();
+void fill_Background();
 
-void new_game();
-void movePlayerRight();
-void movePlayerLeft();
-void playBallInRandomDirection();
-void releaseBall();
-void ballInPlay();
-//void removeBrick(int, int):
-bool detectHitWall();
-bool detectHitBrick();
-bool detectHitPlayer();
-bool detectGameOver();
-
-int main();
+void draw_game();
+void draw_line(int, int, int, int, bool);
+void draw_Brick(int, int, int, int);
+void fillPreviousAnimation(int);
+void draw_Ball(int , int ,int);
+void draw_Player(int, int, int, int);
+void draw_movedPlayer(int);
+void draw_movedBall(int, int);
+void ballMovementAfterRelease(int, int);
+void fillPixel(int, int, uint16_t);
